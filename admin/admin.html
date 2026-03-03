@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Админ панель — Faizovar farma</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="app-body">
+
+<!-- IMAGE PREVIEW MODAL -->
+<div id="imageModal" class="imgm hidden" aria-hidden="true">
+  <div class="imgm-overlay" id="imageOverlay"></div>
+
+  <div class="imgm-card" role="dialog" aria-modal="true" aria-label="Просмотр фото">
+    <button class="imgm-close" id="imageClose" type="button" aria-label="Закрыть">×</button>
+    <img id="imagePreview" class="imgm-img" src="" alt="">
+  </div>
+</div>
+
+
+  <!-- ===== DONE MODAL ===== -->
+<div id="doneModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+
+  <div class="done-card">
+    <button class="done-close" id="doneClose">✕</button>
+
+    <div class="done-icon">
+      ✓
+    </div>
+
+    <div class="done-title" id="doneClientName">
+      Ёкубчон Нуриддинов
+    </div>
+
+    <div class="done-sub">
+      Заказ упакован и готов к отправке
+    </div>
+
+    <button class="done-ok" id="doneOk">
+      Готово
+    </button>
+  </div>
+</div>
+
+<!-- ===== DELETE ORDER MODAL ===== -->
+<div id="delOrderModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+
+  <div class="done-card">
+    <button class="done-close" id="delOrderClose">✕</button>
+
+    <div class="done-icon" style="background:rgba(255,70,70,.14); color:#ff3b3b;">
+      !
+    </div>
+
+    <div class="done-title" id="delOrderTitle">
+      Удалить заказ?
+    </div>
+
+    <div class="done-sub" id="delOrderSub">
+      <!-- сюда JS поставит: дата/время • сумма • позиций -->
+    </div>
+
+    <div class="done-sub" style="margin-top:6px;">
+      Вы хотите удалить этот заказ?
+    </div>
+
+<div class="del-actions">
+  <button class="done-ok del-delete " id="delOrderOk">Удалить</button>
+  <button class="done-ok del-cancel" id="delOrderCancel">Отмена</button>
+</div>
+  </div>
+</div>
+
+<!-- ===== ADD PRODUCT MODAL ===== -->
+<div id="addModal" class="add-modal hidden" aria-hidden="true">
+  <div class="add-overlay" data-add-close="1"></div>
+
+  <div class="add-card" role="dialog" aria-modal="true" aria-label="Добавить препарат">
+    <button class="add-close" id="addClose" type="button" aria-label="Закрыть">✕</button>
+
+    <div class="add-search">
+      <span class="add-search-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+          <path d="M10.5 3a7.5 7.5 0 1 1 0 15A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11Zm8.8 14.4l-3.1-3.1 1.4-1.4 3.1 3.1-1.4 1.4Z" fill="currentColor"/>
+        </svg>
+      </span>
+      <input id="addSearchInput" type="text" placeholder="Поиск по названию" />
+    </div>
+
+    <div class="new-order-title" style="margin-bottom:10px;">
+  <div id="addModalTitle" class="no-main">Добавить в заказ</div>
+  <div id="addModalSub" class="no-client"></div>
+</div>
+
+
+    <div class="add-list-frame">
+      <div id="addProductsList" class="add-list" aria-label="Список препаратов">
+        <!-- rows by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <div class="app-shell">
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside class="side">
+      <div class="side-card">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true"><img src="../img/F.svg" alt="F logo" /></div>
+          <div class="brand-txt">
+            <div class="brand-name">Faizovar farma</div>
+            <div class="brand-sub">Admin panel</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="Навигация">
+        <button id="navOrdersBtn" class="nav-item is-active" type="button">
+          <span class="nav-ico" aria-hidden="true">
+            <!-- clipboard -->
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M9 2h6a2 2 0 0 1 2 2v1h1a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1V4a2 2 0 0 1 2-2Zm0 3h6V4H9v1Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Заказы</span>
+        </button>
+
+        <button id="navClientsBtn" class="nav-item" type="button">
+          <span class="nav-ico" aria-hidden="true">
+            <!-- user -->
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12Zm0 2c-4.3 0-8 2.3-8 5.2V21h16v-1.8c0-2.9-3.7-5.2-8-5.2Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Клиенты</span>
+        </button>
+
+        <button id="navProductsBtn" class="nav-item" type="button">
+          <span class="nav-ico" aria-hidden="true">
+            <!-- pills -->
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M8.8 3.5a6.3 6.3 0 1 1 0 12.6A6.3 6.3 0 0 1 8.8 3.5Zm0 2A4.3 4.3 0 1 0 13.1 9.8 4.3 4.3 0 0 0 8.8 5.5Zm9.6 7.3a4.2 4.2 0 0 1 0 5.9l-2.2 2.2a4.2 4.2 0 0 1-5.9 0 4.2 4.2 0 0 1 0-5.9l2.2-2.2a4.2 4.2 0 0 1 5.9 0Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Склад </span>
+        </button>
+
+        <button id="navReportsBtn" class="nav-item" type="button">
+          <span class="nav-ico" aria-hidden="true">
+            <!-- chart -->
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M4 20V4h2v16H4Zm4 0V10h2v10H8Zm4 0V6h2v14h-2Zm4 0v-8h2v8h-2Zm4 0V8h2v12h-2Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Отчёты</span>
+        </button>
+
+        <button id="navPaymentsBtn" class="nav-item" type="button">
+          <span class="nav-ico" aria-hidden="true">
+            <!-- accounts -->
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4ZM6 13a3 3 0 1 0-3-3 3 3 0 0 0 3 3Zm10 2c-4 0-7 2.2-7 5v1h14v-1c0-2.8-3-5-7-5ZM6 15c-2.6 0-5 1.3-5 3.2V21h6v-1.8c0-1.7.8-3.1 2.2-4.1A8.2 8.2 0 0 0 6 15Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Оплата</span>
+        </button>
+      </nav>
+
+      <div class="side-bottom">
+        <button class="logout" type="button">
+          <span class="logout-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm9.6-5.6-4-4L14.2 8.8 15.8 10H10v2h5.8l-1.6 1.2 1.4 1.4 4-4Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span>Выйти</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN (NO PAGE SCROLL) ===== -->
+    <main class="main">
+      <section class="board">
+
+        <!-- LEFT PANEL: CLIENTS -->
+        <div class="panel panel-left">
+          <div class="panel-head">
+            <div id="leftPanelTitle" class="panel-title">Клиенты</div>
+            <div class="panel-search-row">
+              <div class="panel-search">
+                <input id="clientSearch" type="text" placeholder="Поиск клиента..." />
+              </div>
+              <button id="addClientBtn" class="pill add-client-btn icon-only" type="button" aria-label="Добавить клиента" title="Добавить клиента">
+                <span class="add-client-icon add-client-plus" aria-hidden="true">+</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="list-frame">
+              <div id="clientsList" class="list-scroll" aria-label="Список клиентов">
+                <!-- items by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: ORDERS -->
+        <div class="panel panel-right">
+          <div class="panel-head panel-head-right">
+            <div class="right-top">
+              <div class="right-title-row">
+                <div class="right-client-heading">
+                  <span id="selectedClientAvatar" class="right-client-avatar" aria-hidden="true">Ё</span>
+                  <div class="panel-title" id="selectedClientName">Ёкубчон Нуриддинов</div>
+                </div>
+                <button id="topClientEditBtn" class="clients-controls-edit" type="button" aria-label="зменить клиента" title="зменить клиента">
+                  <span class="edit-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18">
+                      <path d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a1 1 0 0 0-1.42 0l-1.55 1.55 3.75 3.75 1.72-1.39Z" fill="currentColor"></path>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div id="selectedClientMeta" class="top-client-meta"></div>
+
+              <div class="right-controls">
+                <button id="tabOrders" class="pill is-active" type="button">Заказы</button>
+                <button id="tabDone" class="pill is-outline" type="button">Выполненные заказы</button>
+                <button id="tabNewOrder" class="pill tab-new-order" type="button">Новый заказ</button>
+
+
+
+                <div class="spacer"></div>
+                <button id="tabPayNow" class="pill is-outline" type="button" style="display:none;">Оплатить</button>
+
+                <div class="select-wrap">
+                  <select id="yearSelect" aria-label="Год">
+                    <option>2026</option>
+                    <option>2025</option>
+                    <option>2024</option>
+                  </select>
+                </div>
+                <div class="select-wrap">
+                  <select id="monthSelect" aria-label="Месяц">
+                    <option value="1">Январь</option>
+                    <option value="2">Февраль</option>
+                    <option value="3">Март</option>
+                    <option value="4">Апрель</option>
+                    <option value="5">Май</option>
+                    <option value="6">юнь</option>
+                    <option value="7">юль</option>
+                    <option value="8">Август</option>
+                    <option value="9">Сентябрь</option>
+                    <option value="10">Октябрь</option>
+                    <option value="11">Ноябрь</option>
+                    <option value="12">Декабрь</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="head-divider"></div>
+          </div>
+
+          <div class="panel-body">
+            <div id="paymentsSummaryTop" class="payments-summary-top" style="display:none;"></div>
+            <div class="list-frame">
+              <div id="ordersList" class="list-scroll" aria-label="Список заказов">
+                <!-- items by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+<!-- ================== NEW ORDER MODAL ================== -->
+<div id="newOrderModal" class="add-modal hidden" aria-hidden="true">
+  <div class="add-overlay" id="newOrderOverlay"></div>
+
+  <div class="add-card new-order-card" role="dialog" aria-modal="true" aria-label="Новый заказ">
+    <button class="new-order-close" id="newOrderClose" type="button" aria-label="Закрыть">×</button>
+
+<div class="new-order-title">
+  <div class="no-main">Новый заказ</div>
+  <div class="no-client" id="newOrderTitle"></div>
+</div>
+
+    <!-- SEARCH -->
+    <div class="add-search new-order-search">
+      <span class="add-search-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M10.5 3a7.5 7.5 0 1 1 0 15A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11Zm8.8 14.4l-3.1-3.1 1.4-1.4 3.1 3.1-1.4 1.4Z" fill="currentColor"/>
+        </svg>
+      </span>
+      <input id="newOrderSearch" type="text" placeholder="Поиск по названию" />
+    </div>
+
+    <!-- LIST (scroll only here) -->
+    <div class="add-list-frame new-order-frame">
+      <div id="newOrderProducts" class="add-list"></div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+<!-- BOTTOM BAR -->
+<div class="new-order-bottom">
+  <div class="new-order-summary">
+    <div class="new-order-total" id="newOrderTotal">Общая сумма: 0 с</div>
+    <div class="new-order-count" id="newOrderCount">Товаров: 0</div>
+  </div>
+
+  <div class="new-order-actions">
+    <button id="newOrderReviewBtn" class="pill" type="button" disabled>Посмотреть выбранное</button>
+    <button id="newOrderCreate" class="pill is-outline" type="button" disabled>Создать заказ</button>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- ================== QTY MODAL (ВВОД КОЛЧЕСТВА) ================== -->
+<div id="qtyModal" class="qty-modal hidden" aria-hidden="true">
+  <div id="qtyOverlay" class="qty-overlay"></div>
+
+  <div class="qty-card" role="dialog" aria-modal="true" aria-label="Введите количество">
+    <button id="qtyClose" class="qty-close" type="button" aria-label="Закрыть">✕</button>
+
+    <div class="qty-title">Введите количество</div>
+    <div id="qtyName" class="qty-name">—</div>
+
+    <input
+      id="qtyInput"
+      class="qty-input"
+      type="number"
+      min="1"
+      step="1"
+      placeholder="Введите количество"
+    />
+
+    <div class="qty-actions">
+      <button id="qtyCancel" class="qty-btn" type="button">Отмена</button>
+      <button id="qtyOk" class="qty-btn qty-btn-primary" type="button">Ок</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD/EDIT CLIENT MODAL ===== -->
+<div id="addClientModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card">
+    <button class="done-close" id="addClientClose">✕</button>
+    <div class="done-title" id="addClientModalTitle">Новый клиент</div>
+
+    <div class="add-client-fields">
+      <div class="add-field">
+        <label class="add-field-label" for="addClientFullName">ФО</label>
+        <input id="addClientFullName" class="add-client-input" type="text" placeholder="мя и фамилия" />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientPhone">Телефон</label>
+        <input id="addClientPhone" class="add-client-input" type="text" placeholder="+992..." />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientEmail">Email</label>
+        <input id="addClientEmail" class="add-client-input" type="email" placeholder="email@example.com" />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientPharmacy">Аптека / адрес</label>
+        <input id="addClientPharmacy" class="add-client-input" type="text" placeholder="Название аптеки или адрес" />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientDiscount">Скидка (%)</label>
+        <input id="addClientDiscount" class="add-client-input" type="number" min="0" max="100" step="0.1" placeholder="0" />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientPassword">Пароль</label>
+        <input id="addClientPassword" class="add-client-input" type="text" placeholder="Пароль клиента" />
+      </div>
+      <div class="add-field">
+        <label class="add-field-label" for="addClientPhoto">Фото</label>
+        <input id="addClientPhoto" class="add-client-input" type="file" accept="image/*" />
+      </div>
+    </div>
+
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="addClientCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="addClientSave" class="done-ok" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CLIENT DISCOUNT MODAL ===== -->
+<div id="discountModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card">
+    <button class="done-close" id="discountClose">✕</button>
+    <div class="done-title">зменить скидку клиента</div>
+    <div class="done-sub">Введите скидку от 0 до 100</div>
+    <div class="add-client-fields" style="margin-top:12px;">
+      <input id="discountInput" class="add-client-input" type="number" min="0" max="100" step="0.1" placeholder="0" />
+    </div>
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="discountCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="discountSave" class="done-ok" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ORDER DISCOUNT MODAL ===== -->
+<div id="orderDiscountModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card">
+    <button class="done-close" id="orderDiscountClose">✕</button>
+    <div class="done-title">Скидка для заказа</div>
+    <div class="done-sub">Введите скидку от 0 до 100</div>
+    <div class="add-client-fields" style="margin-top:12px;">
+      <input id="orderDiscountInput" class="add-client-input" type="number" min="0" max="100" step="0.1" placeholder="0" />
+    </div>
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="orderDiscountCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="orderDiscountSave" class="done-ok" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RAISE PRICES MODAL ===== -->
+<div id="raisePricesModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card">
+    <button class="done-close" id="raisePricesClose">✕</button>
+    <div class="done-title">Повысить цены</div>
+    <div id="raisePricesSub" class="done-sub">Введите процент для всех препаратов</div>
+    <div class="add-client-fields" style="margin-top:12px;">
+      <input id="raisePricesInput" class="add-client-input" type="number" min="0" max="1000" step="0.1" placeholder="0" />
+    </div>
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="raisePricesCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="raisePricesSave" class="done-ok" type="button">Применить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div id="productModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card" style="width:560px;">
+    <button class="done-close" id="productModalClose">✕</button>
+    <div class="done-title" id="productModalTitle">Новый препарат</div>
+
+    <div class="add-client-fields add-field-stack product-fields-grid">
+      <div class="add-field product-field-name">
+        <label class="add-field-label" for="productNameInput">Название</label>
+        <input id="productNameInput" class="add-client-input" type="text" placeholder="Название препарата" />
+      </div>
+      <div class="add-field product-field-type">
+        <label class="add-field-label" for="productTypeInput">Категория</label>
+        <select id="productTypeInput" class="add-client-input"></select>
+      </div>
+      <div class="add-field product-field-firm">
+        <label class="add-field-label" for="productManufacturerInput">Фирма</label>
+        <input id="productManufacturerInput" class="add-client-input" type="text" placeholder="Производитель" />
+      </div>
+      <div class="add-field product-field-expiry">
+        <label class="add-field-label">Срок годности</label>
+        <div class="add-field-stack">
+          <input id="productExpiryFromInput" class="add-client-input" type="date" />
+          <input id="productExpiryToInput" class="add-client-input" type="date" />
+        </div>
+      </div>
+      <div class="add-field product-field-price">
+        <label class="add-field-label" for="productPriceInput">Цена</label>
+        <input id="productPriceInput" class="add-client-input" type="number" min="0" step="0.01" placeholder="0" />
+      </div>
+      <div class="add-field product-field-stock">
+        <label class="add-field-label" for="productStockInput">Остаток</label>
+        <input id="productStockInput" class="add-client-input" type="number" min="0" step="1" placeholder="0" />
+      </div>
+      <div class="add-field product-field-photo">
+        <label class="add-field-label" for="productImageInput">Фото</label>
+        <input id="productImageInput" class="add-client-input" type="file" accept="image/*" />
+      </div>
+    </div>
+
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="productModalCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="productModalSave" class="done-ok" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAYMENT AMOUNT MODAL ===== -->
+<div id="paymentModal" class="done-modal hidden">
+  <div class="done-overlay"></div>
+  <div class="done-card add-client-card">
+    <button class="done-close" id="paymentClose">✕</button>
+    <div class="done-title">Оплата заказа</div>
+    <div id="paymentSub" class="done-sub">того к оплате: 0 с</div>
+
+    <div class="add-client-fields" style="margin-top:12px;">
+      <div class="add-field">
+        <label class="add-field-label" for="paymentGivenInput">Сумма от клиента</label>
+        <input id="paymentGivenInput" class="add-client-input" type="number" min="0" step="0.01" placeholder="Введите сумму" />
+        <div id="paymentError" class="done-sub" style="display:none; margin-top:6px; color:#d43f3f;"></div>
+      </div>
+    </div>
+
+    <div class="del-actions" style="margin-top:14px;">
+      <button id="paymentCancel" class="done-ok del-cancel" type="button">Отмена</button>
+      <button id="paymentSave" class="done-ok" type="button">Подтвердить оплату</button>
+    </div>
+  </div>
+</div>
+
+  <script src="admin-clients.js"></script>
+
+
+</body>
+</html>

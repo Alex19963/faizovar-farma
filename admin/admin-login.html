@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вход администратора — Faizovar farma</title>
+
+</head>
+
+<body class="app-body admin-login">
+
+  <div class="login-card">
+    <div class="login-title">Вход администратора</div>
+
+    <input id="loginInput" class="login-input" placeholder="Логин" />
+    <input id="passwordInput" type="password" class="login-input" placeholder="Пароль" />
+
+    <button id="loginBtn" class="login-btn">Войти</button>
+
+    <div id="errorBox" class="login-error"></div>
+  </div>
+
+  <script>
+  const loginInput = document.getElementById("loginInput");
+  const passwordInput = document.getElementById("passwordInput");
+  const loginBtn = document.getElementById("loginBtn");
+  const errorBox = document.getElementById("errorBox");
+
+  loginBtn.addEventListener("click", async () => {
+    errorBox.textContent = "";
+    loginInput.classList.remove("input-error");
+    passwordInput.classList.remove("input-error");
+    loginInput.placeholder = "Логин";
+    passwordInput.placeholder = "Пароль";
+
+    const login = loginInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!login) {
+      loginInput.classList.add("input-error");
+      loginInput.placeholder = "Введите логин";
+    }
+    if (!password) {
+      passwordInput.classList.add("input-error");
+      passwordInput.placeholder = "Введите пароль";
+    }
+    if (!login || !password) {
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ login, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorBox.textContent = data.message || "Ошибка входа";
+        return;
+      }
+
+      window.location.href = "/admin/admin.html";
+    } catch (err) {
+      errorBox.textContent = "Ошибка сервера";
+    }
+  });
+  </script>
+<style>
+*{
+  box-sizing: border-box;
+}
+
+body.admin-login{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  padding:20px;
+  margin:0;
+  font-family: Montserrat, sans-serif;
+  background: linear-gradient(180deg,#d7eef1,#cfe3ef);
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:40px;
+  border-radius:28px;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+}
+
+.login-title{
+  font-size:24px;
+  font-weight:700;
+  margin-bottom:26px;
+  text-align:center;
+}
+
+.login-input{
+  width:100%;
+  height:50px;
+  margin-bottom:16px;
+  border-radius:16px;
+  border:1px solid #ccc;
+  padding:0 18px;
+  font-weight:600;
+}
+
+.login-input.input-error{
+  border-color:#d93025;
+}
+
+.login-btn{
+  width:100%;
+  height:50px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,#3a7cff,#7ae7d6);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.login-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(58,124,255,.28);
+  filter: brightness(1.03);
+}
+
+.login-btn:active{
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(58,124,255,.24);
+  filter: brightness(.98);
+}
+
+.login-error{
+  margin-top:10px;
+  min-height:18px;
+  font-size:13px;
+  font-weight:600;
+  color:#d93025;
+}
+</style>
+
+
+</body>
+</html>
+
+

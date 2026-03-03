@@ -1,0 +1,4008 @@
+*{ box-sizing:border-box; }
+
+
+
+body{
+  margin:0;
+  height: 100vh;
+  overflow: hidden;          /* важное: запрещаем скролл страницы */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+
+/* ================= MAIN CONTAINER ================= */
+.page-container{
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
+}
+
+/* ================= NAVIGATION (FIXED TOP) ================= */
+.nav-wrapper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  padding: 0 16px;
+}
+
+.nav-card{
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* УВЕЛИЧЕННЫЕ ВНУТРЕННИЕ ОТСТУПЫ */
+  padding: 22px 22px 26px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  border-radius: 0 0 28px 28px;
+  box-shadow: var(--shadow);
+
+  background:
+    radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.22), transparent 60%),
+    radial-gradient(900px 260px at 90% 100%, rgba(3,240,121,.18), transparent 55%),
+    linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 45%, #0b6cff 100%);
+}
+
+
+.nav-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
+}
+
+.nav-right{
+  display: flex;
+  align-items: center;
+
+  /* УВЕЛИЧЕННОЕ РАССТОЯНИЕ МЕЖДУ КНОПКАМИ */
+  gap: 18px;
+}
+
+
+.nav-logo img{
+  height: 45px;
+  width: auto;
+  display:block;
+}
+
+/* pills */
+.nav-pill{
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 5px 10px 5px 5px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff;
+  text-decoration: none;
+
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.nav-pill:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.16);
+  border-color: rgba(255,255,255,.32);
+}
+
+.nav-action{ cursor:pointer; border:none; }
+
+.nav-circle{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.32);
+  backdrop-filter: blur(8px);
+
+  flex: 0 0 38px;
+}
+
+.nav-ic{
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+  display:block;
+}
+
+.nav-ic-stroke{
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-history-text{
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.nav-cart{
+  min-width: 120px;
+}
+
+.nav-cart-sum{
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  white-space: nowrap;
+}
+
+
+
+/* dropdown меню */
+.search-dd-menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+
+  display: none;
+  padding: 8px;
+  border-radius: 16px;
+
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.10);
+  box-shadow: 0 14px 40px rgba(2,6,23,.18);
+  z-index: 9999;
+}
+
+
+/* === FIX: PROFILE BUTTON ALIGNMENT === */
+.account-btn{
+  height: 50px;
+  padding: 5px;              /* как у корзины на мобилке */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-btn .nav-circle{
+  margin: 0;                 /* убираем любое смещение */
+}
+
+
+
+.search-input input::placeholder{
+  color: rgba(11,31,51,.45) !important;
+}
+
+
+
+
+/* текст в селектах */
+.search-dd-text{
+  color: #0b1f33 !important;
+  font-weight: 700 !important;
+}
+
+/* стрелка */
+.search-dd-arrow{
+  border-right-color: rgba(11,31,51,.45) !important;
+  border-bottom-color: rgba(11,31,51,.45) !important;
+}
+
+
+/* ===============================
+   SEARCH — FULL WIDTH (ПРАВИЛЬНО ПОД ВАШ HTML)
+   =============================== */
+
+.nav-search{ width: 100%; }
+
+/* оболочка поиска внутри nav — на всю ширину nav-card */
+.search-shell{
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* строка поиска — GRID, занимает всю ширину */
+.search-row{
+  width: 100%;
+  display: grid;
+  grid-template-columns: 200px 200px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+/* белые селекты */
+.search-dd-btn{
+  width: 100%;
+  height: 50px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.12);
+  border-radius: 16px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+
+
+/* белое поле поиска */
+.search-input{
+  width: 100%;
+  height: 54px;
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 14px;
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+.search-input input{
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #0b1f33;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+
+/* иконка поиска */
+.search-ic{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11,108,255,.08);
+  border: none;
+}
+
+.search-ic svg{
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #0b6cff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* MOBILE */
+@media (max-width: 820px){
+  .search-row{
+    grid-template-columns: 1fr 1fr;
+  }
+  .search-input{
+    grid-column: 1 / -1;
+  }
+}
+
+/* === FORCE: внутренние отступы у "По названию" и "Категория" === */
+/* ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css */
+
+.nav-search .search-dd-btn{
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+.nav-search .search-dd-text{
+  /* чтобы текст не прилипал внутри, если где-то есть свои стили */
+  padding-right: 6px !important;
+}
+/* === SEARCH: MORE TOP SPACE === */
+.nav-search{
+  margin-top: 16px; /* увеличь до 16–20 если нужно больше */
+}
+
+
+/* 2) Шапка всегда поверх товаров */
+.nav-wrapper{
+  z-index: 3000;
+}
+
+
+
+
+/* ===============================
+   FIX: одинаковая ширина шапки и блока препаратов
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+
+:root{
+  --shell-max: 1200px;   /* ширина как у градиентного блока */
+  --shell-pad: 16px;     /* одинаковые боковые отступы */
+}
+
+/* шапка */
+.nav-wrapper{
+  padding: 0 var(--shell-pad) !important;
+}
+.nav-card{
+  max-width: var(--shell-max) !important;
+  margin: 0 auto !important;
+}
+
+/* блок препаратов */
+.content{
+  left: 0;
+  right: 0;
+}
+
+.products-scroll{
+  width: 100% !important;
+  max-width: var(--shell-max) !important;   /* = ширине градиентного блока */
+  margin: 0 auto !important;
+  padding-left: 22px !important;            /* чтобы совпало с внутренним padding nav-card */
+  padding-right: 22px !important;
+  
+}
+/* ===============================
+   PRODUCT CARD — NEW DESIGN
+   ВСТАВИТЬ В КОНЕЦ style.css
+   =============================== */
+
+#productList{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 980px){
+  #productList{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px){
+  #productList{ grid-template-columns: 1fr; }
+}
+
+/* CARD */
+.product{
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(15,23,42,.08);
+  box-shadow: 0 14px 34px rgba(2,6,23,.08);
+  overflow: hidden;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.product:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(2,6,23,.12);
+  border-color: rgba(11,108,255,.20);
+}
+
+/* IMAGE */
+.product-media{
+  position: relative;
+  width: 100%;
+  height: 210px;
+  background:
+    radial-gradient(120px 80px at 25% 15%, rgba(11,108,255,.10), transparent 60%),
+    radial-gradient(140px 90px at 85% 35%, rgba(3,240,121,.10), transparent 60%),
+    #f3f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 10px;
+}
+
+.product-no-photo{
+  font-weight: 900;
+  font-size: 13px;
+  color: rgba(11,31,51,.45);
+}
+
+/* INFO */
+.product-info{
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.product-top{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* NAME (2 lines max) */
+.product-name{
+  font-size: 15px;
+  font-weight: 950;
+  color: #0b1f33;
+  line-height: 1.2;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* TYPE as badge */
+.product-type{
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(11,31,51,.70);
+
+  background: rgba(11,108,255,.08);
+  border: 1px solid rgba(11,108,255,.14);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+/* BOTTOM */
+.product-bottom{
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-right: 54px; /* место под кнопку + */
+}
+
+.price{
+  font-size: 16px;
+  font-weight: 950;
+  color: #0b1f33;
+}
+
+/* ADD BUTTON */
+.btn-add{
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+
+  border: none;
+  cursor: pointer;
+
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1;
+
+  color: #fff;
+  background: linear-gradient(135deg, #0b6cff 0%, #1d4ed8 100%);
+  box-shadow: 0 14px 30px rgba(11,108,255,.28);
+
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.btn-add:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px rgba(11,108,255,.34);
+}
+
+.btn-add:active{
+  transform: translateY(0px);
+}
+
+/* FOCUS (accessibility) */
+.product:focus-within{
+  outline: 3px solid rgba(11,108,255,.25);
+  outline-offset: 2px;
+}
+/* ===============================
+   PRODUCTS TOP GAP (ОТСТУП ОТ ГРАДИЕНТА)
+   =============================== */
+
+/* регулируй ТОЛЬКО это значение */
+:root{
+  --products-top-gap: 8px; /* 16–32px оптимально */
+}
+
+/* отступ сверху внутри блока препаратов */
+.products-scroll{
+  padding-top: var(--products-top-gap) !important;
+}
+
+
+/* пересобираем padding сверху/сбоку/снизу одним правилом */
+.products-scroll{
+  padding: calc(var(--products-mask-h) + var(--products-top-gap))
+           var(--products-side-pad)
+           16px !important;
+}
+/* ===============================
+   FIX: правильный отступ под шапкой + ширина как у градиента
+   =============================== */
+
+:root{
+  --topbar-h: 220px;          /* запас, реальную высоту поставит JS */
+  --products-maxw: 1200px;    /* как nav-card */
+  --products-side-pad: 16px;  /* как у nav-wrapper */
+}
+
+/* товары всегда начинаются ниже шапки + зазор */
+.content{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(var(--topbar-h) + var(--products-top-gap)) !important;
+  overflow: hidden !important;
+  background: var(--bg);
+}
+
+/* ширина блока товаров = ширине градиента */
+.products-scroll{
+  height: 100%;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+
+  width: 100%;
+  max-width: var(--products-maxw);
+  margin: 0 auto;
+  padding: 0 var(--products-side-pad) 18px !important;
+}
+
+/* если маска сверху мешает — отключаем */
+.products-mask{
+  display: none !important;
+}
+
+/* История заказов — дополнительный отступ справа */
+.nav-history{
+  padding-right: 18px;
+}
+
+/* ===============================
+   PRODUCTS — ROW / LIST VIEW
+   =============================== */
+
+#productList{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* одна строка */
+.product-row{
+  display: grid;
+  grid-template-columns:
+    60px      /* фото */
+    1.6fr     /* название */
+    1fr       /* категория */
+    1.2fr     /* производитель */
+    1fr       /* срок */
+    .8fr      /* цена */
+    120px     /* количество */
+    120px;    /* кнопка */
+
+  align-items: center;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.08);
+  box-shadow: 0 6px 16px rgba(2,6,23,.06);
+}
+
+/* колонки */
+.pr-col{
+  font-size: 13px;
+  color: #0b1f33;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* фото */
+.pr-img{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pr-img img{
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+.no-photo{
+  font-size: 11px;
+  color: #999;
+}
+
+/* название */
+.pr-name{
+  font-weight: 900;
+}
+
+/* цена */
+.pr-price{
+  font-weight: 900;
+}
+
+/* количество */
+.pr-qty{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pr-qty button{
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: #e8efff;
+  font-weight: 900;
+  cursor: pointer;
+}
+.pr-qty input{
+  width: 34px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-weight: 900;
+}
+
+/* кнопка */
+.pr-action button{
+  width: 100%;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0b6cff, #1d4ed8);
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* hover */
+.product-row:hover{
+  border-color: rgba(11,108,255,.25);
+}
+/* ===============================
+   PRODUCTS ROW — MORE HEIGHT / AIR
+   =============================== */
+
+.product-row{
+  padding: 14px 14px;          /* было ~10px → стало больше */
+  min-height: 74px;            /* контролируем высоту строки */
+  align-items: center;
+}
+
+/* фото чуть больше */
+.pr-img img{
+  width: 54px;
+  height: 54px;
+}
+
+/* текст немного комфортнее */
+.pr-col{
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* название чуть выразительнее */
+.pr-name{
+  font-size: 15px;
+  font-weight: 900;
+}
+
+/* количество — больше зона клика */
+.pr-qty button{
+  width: 32px;
+  height: 32px;
+}
+
+.pr-qty input{
+  width: 40px;
+  font-size: 14px;
+}
+
+/* кнопка — выше */
+.pr-action button{
+  height: 38px;
+  font-size: 14px;
+}
+.pr-img img{
+  cursor: zoom-in;
+  transition: transform .12s ease;
+}
+
+.pr-img img:hover{
+  transform: scale(1.06);
+}
+
+/* ===== IMAGE PREVIEW OVERLAY ===== */
+.img-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(2,6,23,.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.img-modal{
+  position: relative;
+  width: min(920px, 96vw);
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0,0,0,.35);
+}
+
+.img-modal img{
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  display: block;
+  object-fit: contain;
+  background: #f3f6fb;
+}
+
+.img-close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.92);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+/* расстояние между количеством и кнопкой */
+.product-row{
+  column-gap: 14px; /* увеличь до 16–20 если нужно больше */
+}
+/* === ADD TO CART ANIMATIONS === */
+
+/* кнопка — пульс */
+@keyframes btnPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.btn-pulse{
+  animation: btnPulse .28s ease;
+}
+
+/* строка товара — подсветка */
+@keyframes rowFlash {
+  from { background-color: rgba(11,108,255,.12); }
+  to   { background-color: #fff; }
+}
+.row-flash{
+  animation: rowFlash .4s ease;
+}
+
+/* корзина в шапке — прыжок */
+@keyframes cartBounce {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+.cart-bounce{
+  animation: cartBounce .3s ease;
+}
+.btn-pulse{ animation: btnPulse .28s ease !important; }
+.row-flash{ animation: rowFlash .4s ease !important; }
+.cart-bounce{ animation: cartBounce .3s ease !important; }
+/* ===============================
+   MOBILE HEADER: FIX + ICON ONLY
+   =============================== */
+
+@media (max-width: 720px){
+
+  /* шапку делаем ниже/компактнее */
+  .nav-card{
+    padding: 14px 14px 14px !important;
+    gap: 12px !important;
+    border-radius: 0 0 22px 22px !important;
+  }
+
+  /* логотип меньше */
+  .nav-logo img{
+    height: 32px !important;
+  }
+
+  /* расстояние между кнопками меньше */
+  .nav-right{
+    gap: 10px !important;
+  }
+
+  /* pills компактнее */
+  .nav-pill{
+    height: 46px !important;
+    padding: 5px !important;
+    min-width: 46px !important;
+    justify-content: center !important;
+  }
+
+  /* круг иконки меньше */
+  .nav-circle{
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
+  }
+
+  /* убрать текст "История заказов" */
+  .nav-history-text{
+    display: none !important;
+  }
+
+  /* убрать текст/сумму у корзины — оставить только иконку */
+  .nav-cart-sum{
+    display: none !important;
+  }
+
+  /* убрать минимальную ширину корзины, чтобы не раздувалась */
+  .nav-cart{
+    min-width: 46px !important;
+  }
+
+  /* поиск сделать чуть ниже/компактнее */
+  .search-row{
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+}
+/* ===============================
+   MOBILE: FIX PRODUCTS BLOCK (ПРЕПАРАТЫ)
+   =============================== */
+@media (max-width: 720px){
+
+  :root{
+    --products-top-gap: 8px;
+    --products-side-pad: 14px;   /* как padding у nav-card на мобилке */
+  }
+
+  /* контент начинается ниже шапки */
+  .content{
+    top: calc(var(--topbar-h) + var(--products-top-gap)) !important;
+  }
+
+  /* список товаров по ширине и отступам совпадает с шапкой */
+  .products-scroll{
+    max-width: 100% !important;
+    padding-left: var(--products-side-pad) !important;
+    padding-right: var(--products-side-pad) !important;
+    padding-bottom: 18px !important;
+  }
+
+  /* строка товара не должна быть слишком тесной */
+  .product-row{
+    border-radius: 14px;
+    padding: 12px 12px !important;
+    min-height: 72px;
+  }
+
+  /* таблица-строка на мобилке: делаем компактно и читаемо */
+  .product-row{
+    grid-template-columns: 54px 1.8fr 0.9fr 0.9fr;
+    grid-template-areas:
+      "img name price action"
+      "img type qty  action";
+    row-gap: 6px;
+  }
+
+  .pr-img{ grid-area: img; }
+  .pr-name{ grid-area: name; }
+  .pr-price{ grid-area: price; text-align: right; }
+  .pr-action{ grid-area: action; }
+  .pr-type{ grid-area: type; }
+  .pr-qty{ grid-area: qty; justify-content: flex-end; }
+
+  /* кнопка "В корзину" компактнее */
+  .pr-action button{
+    height: 40px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+
+  /* количество — удобные кнопки */
+  .pr-qty button{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+  .pr-qty input{
+    width: 38px;
+  }
+
+ 
+}
+/* ===============================
+   MOBILE: PRODUCTS ROW (ПОЛНАЯ ИНФОРМАЦИЯ)
+   =============================== */
+@media (max-width: 720px){
+    .nav-card{
+    padding-bottom: 20px !important; /* как боковые отступы */
+  }
+    .nav-search{
+    margin-top: 6px !important;   /* было ~12–16px */
+  }
+    .nav-search .search-dd-btn{
+    height: 44px !important;     /* было ~50px */
+    border-radius: 14px !important;
+    padding: 0 14px !important;
+  }
+
+  /* текст внутри */
+  .nav-search .search-dd-text{
+    font-size: 13px !important;
+  }
+
+  /* стрелка — компактнее */
+  .nav-search .search-dd-arrow{
+    width: 8px;
+    height: 8px;
+  }
+
+  :root{
+    --products-top-gap: 8px;
+    --products-side-pad: 14px;
+    --topbar-h: 180px; /* запас, JS на мобилке перезапишет */
+  }
+
+  /* контент начинается строго ниже шапки */
+  .content{
+    top: calc(var(--topbar-h) + var(--products-top-gap)) !important;
+  }
+
+  .products-scroll{
+    max-width: 100% !important;
+    padding-left: var(--products-side-pad) !important;
+    padding-right: var(--products-side-pad) !important;
+    padding-bottom: 18px !important;
+  }
+
+  /* строка товара превращается в компактную "карточку" */
+  .product-row{
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    grid-template-areas:
+      "img name"
+      "img type"
+      "img manufacturer"
+      "img expiry"
+      "img price"
+      "qty qty"
+      "action action";
+    row-gap: 6px;
+    column-gap: 12px;
+
+    padding: 12px 12px !important;
+    border-radius: 14px;
+    min-height: auto;
+  }
+
+    /* Шапка во всю ширину экрана */
+  .nav-wrapper{
+    padding: 0 !important;          /* убираем боковые отступы wrapper */
+  }
+
+  .nav-card{
+    max-width: 100% !important;     /* убираем ограничение 1200px */
+    width: 100% !important;
+    margin: 0 !important;           /* убираем авто-центрирование */
+  }
+
+  .pr-img{ grid-area: img; }
+  .pr-name{ grid-area: name; }
+
+  .pr-type{ grid-area: type; }
+  .pr-manufacturer{ grid-area: manufacturer; }
+  .pr-expiry{ grid-area: expiry; }
+
+  .pr-price{
+    grid-area: price;
+    font-weight: 950;
+  }
+
+  .pr-qty{
+    grid-area: qty;
+    justify-content: flex-start;
+    padding-top: 6px;
+  }
+
+  .pr-action{
+    grid-area: action;
+  }
+
+  /* делаем "служебные" строки компактными и читаемыми */
+  .pr-type,
+  .pr-manufacturer,
+  .pr-expiry{
+    font-size: 13px;
+    color: rgba(11,31,51,.75);
+    white-space: normal;     /* важно: перенос строк */
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .pr-name{
+    font-size: 15px;
+    font-weight: 950;
+    white-space: normal;
+  }
+
+  /* кнопки количества удобнее */
+  .pr-qty button{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+  .pr-qty input{
+    width: 42px;
+    font-size: 14px;
+  }
+
+  /* кнопка "В корзину" на всю ширину */
+  .pr-action button{
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  /* фото чуть меньше, чтобы карточка не растягивалась */
+  .pr-img img{
+    width: 56px;
+    height: 56px;
+  }
+
+   /* показать мобильную строку */
+  .pr-mobileline{ display:flex !important; }
+
+  /* скрыть ПК колонки только на мобилке */
+  .pr-name, .pr-type, .pr-manufacturer, .pr-expiry, .pr-price{
+    display:none !important;
+  }
+
+  /* 2 строки: (img+line) и (qty+button) */
+  .product-row{
+    display:grid !important;
+    grid-template-columns: 62px 1fr;
+    grid-template-areas:
+      "img line"
+      "qty action";
+    column-gap: 12px;
+    row-gap: 10px;
+    align-items:center;
+  }
+
+  .pr-img{ grid-area: img; }
+  .pr-mobileline{ grid-area: line; }
+
+  .pr-mobileline{
+    align-items:center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 850;
+    color: rgba(11,31,51,.78);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .pr-mobileline .m-name{
+    font-weight: 950;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pr-mobileline .m-meta{
+    color: rgba(11,31,51,.72);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pr-mobileline .m-dot{
+    color: rgba(11,31,51,.35);
+    font-weight: 900;
+    flex: 0 0 auto;
+  }
+  .pr-mobileline .m-price{
+    margin-left: auto;
+    font-weight: 950;
+    flex: 0 0 auto;
+  }
+
+  /* qty + button в одной строке */
+  .pr-qty{
+    grid-area: qty;
+    height: 44px;
+    border-radius: 12px;
+    background: #e8efff;
+    padding: 0 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .pr-action{ grid-area: action; }
+  .pr-action button{
+    width:100%;
+    height:44px;
+    border-radius:12px;
+  }
+}
+
+
+
+
+/* ===== SEARCH: arrow + dropdown open ===== */
+.search-dd{
+  position: relative;
+}
+
+.search-dd-arrow{
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  border-right: 2px solid rgba(11,31,51,.45);
+  border-bottom: 2px solid rgba(11,31,51,.45);
+  flex: 0 0 auto;
+}
+
+/* меню */
+.search-dd-menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+
+  display: none;
+  padding: 8px;
+  border-radius: 16px;
+
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.10);
+  box-shadow: 0 14px 40px rgba(2,6,23,.18);
+  z-index: 9999;
+}
+
+.search-dd.open .search-dd-menu{
+  display: block;
+}
+/* ===============================
+   DROPDOWN LIST — RESTORE (как раньше)
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+
+/* меню */
+.search-dd-menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 10px);
+
+  display: none;                 /* важно */
+  padding: 8px;
+  border-radius: 16px;
+
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.10);
+  box-shadow: 0 14px 40px rgba(2,6,23,.18);
+  z-index: 9999;
+}
+
+/* показ при открытии */
+.search-dd.open .search-dd-menu{
+  display: block;                /* важно */
+}
+
+/* пункты */
+.search-dd-item{
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+
+  padding: 12px 12px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(11,31,51,.88);
+  cursor: pointer;
+}
+
+.search-dd-item:hover{
+  background: rgba(11,108,255,.08);
+}
+
+.search-dd-item.is-active{
+  background: rgba(11,108,255,.14);
+  color: rgba(11,31,51,.98);
+}
+.pr-mobileline{ display:none; }
+
+/* ===============================
+   MOBILE: pr-mobileline = 3 строки (name / meta / price)
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* ваша текущая схема (оставляем) */
+  .pr-mobileline{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    white-space: normal !important; /* теперь можно строки */
+    overflow: visible !important;
+  }
+
+  /* 1) Название */
+  .pr-mobileline .m-name{
+    font-size: 14px !important;
+    font-weight: 950 !important;
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 2) Второстепенная строка */
+  .pr-mobileline .m-sub{
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: rgba(11,31,51,.70) !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+  }
+
+  .pr-mobileline .m-sub .m-meta{
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pr-mobileline .m-sub .m-dot{
+    color: rgba(11,31,51,.35) !important;
+    font-weight: 900 !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* 3) Цена отдельной строкой */
+  .pr-mobileline .m-price{
+    font-size: 14px !important;
+    font-weight: 950 !important;
+    color: #0b1f33 !important;
+    margin: 0 !important;
+  }
+}
+@media (max-width: 720px){
+
+  /* весь блок — строго влево */
+  .pr-mobileline{
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+
+  /* строка с категорией/производителем/сроком:
+     меньше шрифт и без жирности */
+  .pr-mobileline .m-sub{
+    justify-content: flex-start !important;
+    font-size: 11px !important;     /* было 12 */
+    font-weight: 600 !important;    /* было 800 */
+    line-height: 1.2 !important;
+  }
+
+  .pr-mobileline .m-sub .m-meta{
+    font-weight: 500 !important;    /* убрать жирность */
+  }
+
+  .pr-mobileline .m-sub .m-dot{
+    font-weight: 700 !important;    /* точки можно оставить чуть плотнее */
+  }
+}
+@media (max-width: 720px){
+
+  /* кнопка "В корзину" — уже по ширине */
+  .pr-action button{
+    width: auto !important;        /* не на всю строку */
+    min-width: 120px;              /* контролируем ширину */
+    padding: 0 14px !important;    /* компактнее */
+    height: 42px !important;
+    font-size: 13px !important;
+    border-radius: 12px;
+  }
+
+    .pr-qty{ 
+    grid-area: qty;             /* ДОБАВИТЬ */
+    height: 44px;
+    border-radius: 12px;
+    background: #e8efff;
+    padding: 0 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .pr-action{
+    grid-area: action;          /* ДОБАВИТЬ */
+  }
+
+  .pr-action button{
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+}
+
+/* ===============================
+   MOBILE: FIX QTY + ACTION LAYOUT
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* фиксируем сетку карточки */
+  .product-row{
+    display: grid !important;
+    grid-template-columns: 62px 1fr !important;
+    grid-template-areas:
+      "img line"
+      "qty action" !important;
+    column-gap: 12px !important;
+    row-gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .pr-img{ grid-area: img !important; }
+  .pr-mobileline{ grid-area: line !important; }
+
+  /* ВАЖНО: qty и action должны попадать в области */
+  .pr-qty{
+    grid-area: qty !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+    background: #e8efff !important;
+    padding: 0 10px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* было space-between — ломает */
+    gap: 8px !important;
+    min-width: 0 !important;
+  }
+
+  .pr-qty button{
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .pr-qty input{
+    width: 44px !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .pr-action{ 
+    grid-area: action !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  /* кнопка компактная и НЕ перезаписывается на 100% */
+  .pr-action button{
+    width: auto !important;
+    min-width: 120px !important;
+    padding: 0 14px !important;
+    height: 44px !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+  }
+}
+/* ===============================
+   MOBILE CART: FIX QTY SELECTOR
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* 1) Строка корзины: не даём контролам сжиматься/ломаться */
+  .CART_ROW{
+    align-items: center;
+  }
+
+  /* 2) Селектор количества: всегда компактный, в одну линию */
+  .CART_QTY{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+
+    width: auto !important;        /* ВАЖНО */
+    min-width: 0 !important;
+    flex: 0 0 auto !important;     /* ВАЖНО: не растягивать */
+    white-space: nowrap !important;
+
+    height: 40px !important;
+    padding: 0 10px !important;
+    border-radius: 12px !important;
+    background: #e8efff !important;
+  }
+
+  /* 3) Кнопки +/- не должны сжиматься */
+  .CART_QTY button{
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;     /* ВАЖНО */
+    border-radius: 10px !important;
+  }
+
+  /* 4) Поле количества фиксируем */
+  .CART_QTY input{
+    width: 44px !important;
+    flex: 0 0 44px !important;     /* ВАЖНО */
+    text-align: center !important;
+    border: none !important;
+    background: transparent !important;
+    font-weight: 900 !important;
+  }
+}
+
+/* ===============================
+   MOBILE FIX: QTY + ADD BUTTON (видимый селектор количества)
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* 1) Меняем сетку карточки: добавляем 3-ю колонку под кнопку */
+  .product-row{
+    grid-template-columns: 62px 1fr 132px !important;
+    grid-template-areas:
+      "img line line"
+      "qty qty action" !important;
+    column-gap: 12px !important;
+    row-gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .pr-img{ grid-area: img !important; }
+  .pr-mobileline{ grid-area: line !important; }
+
+  /* 2) QTY теперь занимает 2 колонки -> помещается "-" "1" "+" */
+  .pr-qty{
+    grid-area: qty !important;
+    width: 100% !important;
+    height: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+
+    background: #e8efff !important;
+    border-radius: 12px !important;
+    padding: 0 10px !important;
+
+    overflow: visible !important; /* чтобы ничего не резало */
+  }
+
+  .pr-qty button{
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    flex: 0 0 34px !important;
+  }
+
+  .pr-qty input{
+    width: 44px !important;
+    flex: 0 0 44px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    border: none !important;
+    background: transparent !important;
+    font-weight: 900 !important;
+  }
+
+  /* 3) Кнопка "В корзину" остаётся справа, фиксированной ширины */
+  .pr-action{
+    grid-area: action !important;
+    width: 132px !important;
+  }
+
+  .pr-action button{
+    width: 100% !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+    font-size: 13px !important;
+    padding: 0 12px !important;
+  }
+}
+/* ===============================
+   MOBILE: qty + add button одинаковые по размеру и аккуратный stepper
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* Сетка карточки:
+     1) строка: фото + текст (на 2 колонки)
+     2) строка: фото + (qty) + (action) */
+  .product-row{
+    grid-template-columns: 62px 1fr 1fr !important;
+    grid-template-areas:
+      "img line line"
+      "img qty  action" !important;
+    column-gap: 12px !important;
+    row-gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .pr-img{ grid-area: img !important; }
+  .pr-mobileline{ grid-area: line !important; }
+  .pr-qty{ grid-area: qty !important; }
+  .pr-action{ grid-area: action !important; }
+
+  /* ---------- ОДИНАКОВАЯ ВЫСОТА ---------- */
+  .pr-qty,
+  .pr-action button{
+    height: 44px !important;
+    border-radius: 12px !important;
+  }
+
+  /* ---------- ОДИНАКОВАЯ ШИРИНА ---------- */
+  /* Оба блока занимают свои колонки 1fr/1fr */
+  .pr-qty{
+    width: 100% !important;
+  }
+  .pr-action{
+    width: 100% !important;
+  }
+  .pr-action button{
+    width: 100% !important;
+  }
+
+  /* ---------- СЕЛЕКТОР КОЛИЧЕСТВА (stepper) ---------- */
+  .pr-qty{
+    display: grid !important;
+    grid-template-columns: 44px 1fr 44px !important;
+    align-items: center !important;
+    gap: 0 !important;
+
+    background: #fff !important;
+    border: 1px solid rgba(15,23,42,.12) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .pr-qty button{
+    width: 44px !important;
+    height: 44px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: rgba(11,108,255,.08) !important;
+    font-weight: 950 !important;
+    cursor: pointer !important;
+  }
+
+  .pr-qty input{
+    width: 100% !important;
+    height: 44px !important;
+    border: 0 !important;
+    background: transparent !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    font-weight: 950 !important;
+  }
+
+  /* ---------- КНОПКА "В корзину" ---------- */
+  .pr-action button{
+    font-size: 13px !important;
+    padding: 0 12px !important;
+  }
+}
+/* ===============================
+   MOBILE: CART ICON ACTIVE COLOR
+   =============================== */
+@media (max-width: 720px){
+
+  /* активное состояние корзины */
+  .nav-cart.is-active svg{
+    stroke: #03F079 !important;   /* зелёный акцент */
+    fill: none !important;
+  }
+
+  /* если иконка с fill, а не stroke */
+  .nav-cart.is-active svg path{
+    fill: #03F079 !important;
+  }
+}
+/* ===============================
+   MOBILE: CART ICON ACTIVE COLOR (NEW)
+   =============================== */
+@media (max-width: 720px){
+
+  .nav-cart.is-active .nav-ic-stroke{
+    stroke: #0b6cff !important;
+  }
+
+  .nav-cart.is-active .nav-ic{
+    fill: #0b6cff !important;
+  }
+
+  .nav-cart.is-active svg path{
+    fill: #b9ecff !important;
+    stroke: #b9ecff !important;
+  }
+}
+/* ===============================
+   DESKTOP: CART ICON ACTIVE COLOR
+   =============================== */
+@media (min-width: 721px){
+
+  .nav-cart.is-active .nav-ic-stroke{
+    stroke: #b9ecff !important;
+  }
+
+  .nav-cart.is-active .nav-ic{
+    fill: #b9ecff !important;
+  }
+
+  .nav-cart.is-active svg path{
+    fill: #b9ecff !important;
+    stroke: #b9ecff !important;
+  }
+}
+
+/* ================= CART SCREEN ================= */
+.cart-screen{
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 6000;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-screen.hidden{
+  display: none;
+}
+
+.cart-header{
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  font-weight: 900;
+  border-bottom: 1px solid rgba(15,23,42,.12);
+}
+
+#cartBack{
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#cartItems{
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.cart-row{
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+.cart-name{
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.cart-qty{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cart-qty button{
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: #e8efff;
+  font-weight: 900;
+}
+
+.cart-price{
+  font-weight: 900;
+}
+
+.cart-remove{
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.cart-footer{
+  border-top: 1px solid rgba(15,23,42,.12);
+  padding: 14px;
+}
+
+.order-btn{
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #0b6cff, #1d4ed8);
+}
+
+.hidden{ display:none !important; }
+
+
+
+/* верхняя панель корзины */
+.cart-head{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(15,23,42,.10);
+}
+
+.cart-back{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cart-title{
+  font-size: 16px;
+  font-weight: 950;
+  color: #0b1f33;
+}
+
+.cart-sum{
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(11,31,51,.85);
+  white-space: nowrap;
+}
+
+/* чтобы список в корзине выглядел как "Препараты" */
+.cart-scroll{
+  flex: 1;
+  padding-top: 12px !important;
+}
+
+/* кнопка заявки как у тебя снизу */
+.cart-screen .order-btn{
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  border: none;
+  padding: 16px;
+}
+
+/* CART OVERLAY FIX */
+.hidden{ display:none !important; }
+
+
+
+/* чтобы список в корзине начинался ниже фиксированной шапки */
+.cart-screen .cart-scroll{
+  padding-top: var(--topbar-h, 176px);
+}
+
+/* когда открыта корзина — скрываем основной контент под ней */
+body.cart-open .content{
+  display: none !important;
+}
+
+/* ===============================
+   CART HEADER = градиент как на главной + ширина как у nav-card
+   ВСТАВИТЬ В КОНЕЦ style.css
+   =============================== */
+
+:root{
+  --shell-max: 1200px; /* уже есть у вас выше — оставьте одно значение, если дублируется */
+  --shell-pad: 16px;   /* боковые отступы как у nav-wrapper */
+}
+
+/* экран корзины: боковые отступы как у шапки */
+.cart-screen{
+  padding: 0 var(--shell-pad);
+}
+
+/* верхний блок корзины (стрелка/заголовок/итого) */
+.cart-head{
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  width: 100%;
+
+  /* как у nav-card */
+  padding: 18px 22px;
+  border-radius: 0 0 28px 28px;
+  box-shadow: var(--shadow);
+  border-bottom: 0;
+
+  /* градиент как у nav-card */
+  background:
+    radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.22), transparent 60%),
+    radial-gradient(900px 260px at 90% 100%, rgba(3,240,121,.18), transparent 55%),
+    linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 45%, #0b6cff 100%);
+
+  color: #fff;
+}
+
+/* текст в шапке корзины — белый */
+.cart-title{
+  color: #fff;
+}
+
+/* блок "Итого" делаем аккуратным, читабельным на градиенте */
+.cart-sum{
+  color: rgba(255,255,255,.92);
+  font-weight: 900;
+}
+
+/* кнопка назад — в стиле pills */
+.cart-back{
+  border: 1px solid rgba(255,255,255,.22) !important;
+  background: rgba(255,255,255,.12) !important;
+  color: #fff !important;
+  backdrop-filter: blur(8px);
+}
+
+/* чтобы список корзины начинался сразу под градиентной шапкой */
+.cart-scroll{
+  padding-top: 12px !important;
+}
+
+/* MOBILE: на телефоне делаем шапку во всю ширину, как у вас на главной */
+@media (max-width: 720px){
+  .cart-screen{
+    padding: 0 !important;
+  }
+  .cart-head{
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 0 22px 22px !important;
+    padding: 14px 14px !important;
+  }
+}
+/* ===============================
+   CART HEADER FIXES
+   =============================== */
+
+/* 1. УБРАТЬ ТЕКСТ "Корзина" */
+.cart-title{
+  display: none !important;
+}
+
+
+
+/* 3. СТРЕЛКА — ЖИРНЕЕ И ЧЕТЧЕ */
+.cart-back{
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  font-weight: 900;          /* жирнее */
+  line-height: 1;
+
+  border-radius: 14px;
+}
+
+/* если стрелка — SVG */
+.cart-back svg{
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.8;         /* делает стрелку толще */
+}
+
+/* если стрелка — текст ← */
+.cart-back::before{
+  font-weight: 900;
+}
+
+/* MOBILE — чуть компактнее */
+@media (max-width: 720px){
+  .cart-back{
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
+
+/* рисуем стрелку сами, строго по центру */
+.cart-back::before{
+
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+}
+/* ===============================
+   CART BACK ARROW — PERFECT CENTER + BOLD
+   =============================== */
+
+.cart-back{
+  position: relative !important;
+
+  width: 44px !important;
+  height: 44px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 0 !important;     /* убираем влияние символа ← */
+  line-height: 0 !important;
+  color: transparent !important;
+}
+
+/* Рисуем жирную стрелку (chevron) */
+.cart-back::before{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 12px;
+  height: 12px;
+
+  transform: translate(-50%, -50%) rotate(45deg);
+
+  border-left: 4px solid rgba(255,255,255,.95);
+  border-bottom: 4px solid rgba(255,255,255,.95);
+
+  border-radius: 1px; /* чуть мягче углы */
+}
+
+/* Мобилка */
+@media (max-width: 720px){
+  .cart-back{
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .cart-back::before{
+    width: 11px;
+    height: 11px;
+    border-left-width: 4px;
+    border-bottom-width: 4px;
+  }
+}
+
+
+/* ===============================
+   CART HEAD: BACK + SEARCH + 2 PILLS
+   =============================== */
+
+.cart-head{
+  max-width: var(--shell-max, 1200px);
+  margin: 0 auto;
+  width: 100%;
+
+  padding: 18px 22px;
+  border-radius: 0 0 28px 28px;
+  box-shadow: var(--shadow);
+  border-bottom: 0;
+
+  background:
+    radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.22), transparent 60%),
+    radial-gradient(900px 260px at 90% 100%, rgba(3,240,121,.18), transparent 55%),
+    linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 45%, #0b6cff 100%);
+
+  display: grid;
+  grid-template-columns: 44px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Поиск в шапке корзины */
+.cart-search{
+  height: 50px;
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 14px;
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.12);
+}
+
+.cart-search-ic{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11,108,255,.08);
+}
+
+.cart-search-ic svg{
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #0b6cff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cart-search input{
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #0b1f33;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.cart-search input::placeholder{
+  color: rgba(11,31,51,.45);
+}
+
+/* В корзине кнопка корзины должна быть “как на главной”, но без навигации */
+.cart-head-cart{
+  cursor: default;
+}
+
+/* Кнопка-счетчик (такая же pill) */
+.cart-head-count{
+  user-select: none;
+}
+
+.cart-count-text{
+  font-size: 14px;
+  font-weight: 950;
+  color: #fff;
+  white-space: nowrap;
+  padding-right: 6px;
+}
+
+/* ===============================
+   BACK BUTTON — PERFECT CENTER CHEVRON
+   =============================== */
+.cart-back{
+  position: relative !important;
+
+  width: 44px !important;
+  height: 44px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  background: rgba(255,255,255,.12) !important;
+  backdrop-filter: blur(8px);
+
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+}
+
+.cart-back::before{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 12px;
+  height: 12px;
+
+  transform: translate(-50%, -50%) rotate(45deg);
+
+  border-left: 4px solid rgba(255,255,255,.95);
+  border-bottom: 4px solid rgba(255,255,255,.95);
+  border-radius: 1px;
+}
+
+/* MOBILE */
+@media (max-width: 720px){
+  .cart-head{
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 0 22px 22px !important;
+    padding: 14px 14px !important;
+
+    grid-template-columns: 40px 1fr auto auto;
+    gap: 10px;
+  }
+
+  .cart-search{
+    height: 46px;
+    border-radius: 14px;
+    padding: 0 12px;
+  }
+
+  .cart-back{
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+
+  .cart-back::before{
+    width: 11px;
+    height: 11px;
+  }
+}
+/* ИКОНКА "КОЛИЧЕСТВО ТОВАРОВ" */
+.count-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+
+  /* если иконка чёрная, а фон тёмный */
+  filter: invert(1);
+}
+/* ИКОНКА КОЛИЧЕСТВА — БЕЛАЯ */
+.cart-head-count .count-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+/* ===============================
+   FORCE: BACK BUTTON = PERFECT CIRCLE
+   (ДОЛЖНО БЫТЬ В САМОМ КОНЦЕ style.css)
+   =============================== */
+
+#cartBack.cart-back{
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+
+  border-radius: 999px !important;   /* КРУГ */
+  padding: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 1px solid rgba(255,255,255,.28) !important;
+  background: rgba(255,255,255,.16) !important;
+  backdrop-filter: blur(10px) !important;
+
+  /* убираем влияние текста */
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+}
+
+/* стрелка (ваш chevron) — по центру */
+#cartBack.cart-back::before{
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+
+  border-left: 4px solid rgba(255,255,255,.95) !important;
+  border-bottom: 4px solid rgba(255,255,255,.95) !important;
+
+  border-radius: 1px !important;
+}
+
+@media (max-width: 720px){
+  #cartBack.cart-back{
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-radius: 999px !important;
+  }
+  #cartBack.cart-back::before{
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
+
+/* ===============================
+   CART: ORDER BUTTON WIDTH = GRADIENT BLOCK
+   (В САМЫЙ КОНЕЦ style.css)
+   =============================== */
+
+#cartScreen .cart-footer{
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+
+  /* фон, чтобы кнопка читалась поверх списка */
+  background: var(--bg);
+  border-top: 1px solid rgba(15,23,42,.10);
+
+  /* отступы сверху/снизу */
+  padding: 14px 0 16px;
+}
+
+/* ширина как у шапки/градиента */
+#cartScreen .cart-footer-inner{
+  max-width: var(--shell-max, 1200px);
+  margin: 0 auto;
+  padding: 0 22px; /* как у nav-card/cart-head */
+}
+
+/* сбрасываем старые правила, где padding был на кнопке */
+#cartScreen .order-btn{
+  position: static !important;
+  bottom: auto !important;
+
+  width: 100% !important;
+  display: block !important;
+
+  padding: 0 !important;          /* ВАЖНО */
+  height: 48px;
+  border-radius: 14px;
+}
+
+/* MOBILE */
+@media (max-width: 720px){
+  #cartScreen .cart-footer-inner{
+    padding: 0 14px;
+  }
+  #cartScreen .order-btn{
+    height: 46px;
+    border-radius: 12px;
+  }
+}
+/* ===============================
+   ORDER BUTTON — GREEN GRADIENT (NO SHADOW)
+   =============================== */
+
+#cartScreen .order-btn{
+  background: linear-gradient(
+    135deg,
+    #03F079 0%,
+    #16a34a 100%
+  ) !important;
+
+  color: #ffffff !important;
+  font-weight: 950 !important;
+
+  box-shadow: none !important;   /* УБРАЛИ ТЕНЬ */
+}
+
+/* hover — без тени */
+@media (hover:hover){
+  #cartScreen .order-btn:hover{
+    box-shadow: none !important;
+    filter: brightness(1.02);
+  }
+}
+
+/* active — без тени */
+#cartScreen .order-btn:active{
+  box-shadow: none !important;
+  filter: brightness(.96);
+}
+/* ===============================
+   MOBILE — CART = MAIN (FINAL)
+   =============================== */
+
+
+   /* ===============================
+   MOBILE — FORCE SAME WIDTH (FIX)
+   =============================== */
+@media (max-width: 720px){
+
+  /* УБИРАЕМ ВСЕ ВНУТРЕННИЕ ОТСТУПЫ КОРЗИНЫ */
+  .cart-screen,
+  .cart-scroll,
+  .cart-scroll .products-wrap{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* КАРТОЧКА = 100% ЭКРАНА */
+  .cart-scroll .product-row{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0; /* как на главной */
+  }
+
+  /* ВНУТРЕННИЕ ОТСТУПЫ КАК НА ГЛАВНОЙ */
+  .cart-scroll .product-row{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+
+@media (max-width: 720px){
+
+  /* ширина оставляем исправленной */
+  .cart-scroll .product-row{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    /* ВОЗВРАЩАЕМ КАК НА ГЛАВНОЙ */
+    border-radius: 14px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* внутренние отступы карточки — как на главной */
+  .cart-scroll .product-row{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+/* ===============================
+   DESKTOP — CARD SPACING (CART = MAIN)
+   =============================== */
+@media (min-width: 721px){
+
+  /* расстояние между карточками */
+  .cart-scroll .product-row{
+    margin-bottom: 14px !important;
+  }
+
+}
+/* ===============================
+   CART HEAD (MOBILE): ROW1 = back+cart+count, ROW2 = search
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* шапка корзины: 2 строки */
+  .cart-head{
+    display: grid !important;
+
+    grid-template-columns: 40px auto auto !important;
+    grid-template-areas:
+      "back cart count"
+      "search search search" !important;
+
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 10px !important;
+  }
+
+  /* раскладываем элементы по зонам */
+  #cartBack{ grid-area: back !important; }
+
+  .cart-search{
+    grid-area: search !important;
+    width: 100% !important;
+  }
+
+  .cart-head-cart{
+    grid-area: cart !important;
+    justify-self: end !important;
+  }
+
+  .cart-head-count{
+    grid-area: count !important;
+    justify-self: end !important;
+  }
+
+  /* чтобы “пиллы” не растягивались */
+  .cart-head-cart,
+  .cart-head-count{
+    width: auto !important;
+  }
+
+  /* поиск чуть компактнее на мобилке */
+  .cart-search{
+    height: 46px !important;
+    border-radius: 14px !important;
+    padding: 0 12px !important;
+  }
+}
+/* ===============================
+   MOBILE — SHOW PRICE IN CART HEADER
+   =============================== */
+@media (max-width: 720px){
+
+  /* кнопка корзины в шапке */
+  .cart-head-cart{
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-width: max-content !important;
+  }
+
+  /* цена (0 c) — принудительно показываем */
+  .cart-head-cart .nav-cart-sum{
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+    opacity: 1 !important;
+  }
+
+  /* число */
+  .cart-head-cart .nav-cart-sum span{
+    display: inline !important;
+  }
+}
+/* ===============================
+   MOBILE: cart sum + count strictly right
+   =============================== */
+@media (max-width: 720px){
+
+  /* вся шапка: выравниваем элементы по правому краю */
+  .cart-head{
+    justify-items: end !important;
+  }
+
+  /* кнопка корзины в корзине: НЕ центр, а справа */
+  .cart-head-cart{
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+
+  /* сумма в кнопке: не давать центроваться */
+  .cart-head-cart .nav-cart-sum{
+    display: inline-flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+  }
+
+  /* на всякий случай — контейнер числа тоже вправо */
+  .cart-head-count{
+    justify-content: flex-end !important;
+  }
+}
+/* ===============================
+   CART (MOBILE): row1 = back + (sum right) + (count right)
+   row2 = search
+   =============================== */
+@media (max-width: 720px){
+
+  /* Шапка корзины: делаем 2 строки через grid */
+  .cart-head{
+    display: grid !important;
+    grid-template-columns: 40px 1fr auto auto !important;
+    grid-template-areas:
+      "back spacer cart count"
+      "search search search search" !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  /* области */
+  #cartBack{ grid-area: back !important; }
+  .cart-search{ grid-area: search !important; }
+
+  .cart-head-cart{
+    grid-area: cart !important;
+
+    /* ключ: перебиваем центрирование nav-pill */
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    min-width: 136px !important;      /* чтобы сумма помещалась */
+    padding-right: 12px !important;
+
+    /* расстояние от количества */
+    margin-right: 8px !important;
+  }
+
+  .cart-head-count{
+    grid-area: count !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    min-width: 92px !important;       /* чтобы число не липло */
+    padding-right: 12px !important;
+  }
+
+  /* Сумма: всегда видна и прижата вправо */
+  .cart-head-cart .nav-cart-sum{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    white-space: nowrap !important;
+    text-align: right !important;
+  }
+
+  /* На всякий случай: если где-то прячется на мобилке */
+  .cart-head .nav-cart-sum{
+    display: inline-flex !important;
+  }
+
+  /* Жёстко перебиваем ваш общий mobile-стиль nav-pill (center) */
+  .cart-head .nav-pill{
+    justify-content: flex-end !important;
+  }
+}
+
+/* ===============================
+   MOBILE (ONLY): CART HEADER — SUM + COUNT STRICTLY RIGHT (FINAL)
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+@media (max-width: 720px){
+
+  /* 1) Шапка корзины: 2 строки, справа сумма + количество */
+  .cart-head{
+    display: grid !important;
+    grid-template-columns: 40px 1fr max-content max-content !important;
+    grid-template-areas:
+      "back spacer cart count"
+      "search search search search" !important;
+
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 10px !important;
+
+    /* чтобы ничего не “вылезало” */
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* 2) Области */
+  #cartBack{ grid-area: back !important; }
+
+  .cart-search{
+    grid-area: search !important;
+    width: 100% !important;
+    min-width: 0 !important;        /* важно: поле поиска может сжиматься */
+  }
+
+  .cart-head-cart{ grid-area: cart !important; }
+  .cart-head-count{ grid-area: count !important; }
+
+  /* 3) Сумма и количество: всегда справа и не ломаются */
+  .cart-head-cart,
+  .cart-head-count{
+    justify-self: end !important;
+    align-self: center !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    min-width: max-content !important;
+  }
+
+  /* 4) Перебиваем общий mobile-стиль .nav-pill (где вы делали центрирование) */
+  .cart-head .nav-pill{
+    justify-content: flex-end !important;
+    min-width: 0 !important;
+  }
+
+  /* 5) Принудительно показываем сумму в кнопке корзины (на мобилке) */
+  .cart-head-cart .nav-cart-sum{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    white-space: nowrap !important;
+  }
+
+  /* 6) Фикс ширин, чтобы “0 c” и количество не переносились */
+  .cart-head-cart{ min-width: 132px !important; padding-right: 12px !important; }
+  .cart-head-count{ min-width: 86px !important; padding-right: 12px !important; }
+
+  /* 7) Чтобы иконки не сжимались */
+  .cart-head-cart .nav-circle,
+  .cart-head-count .nav-circle{
+    flex: 0 0 34px !important;
+  }
+}
+/* ===============================
+   ORDER NOTICE (INLINE, NOT FULLSCREEN)
+   =============================== */
+
+.order-notice{
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  background: rgba(3,240,121,.12);
+  border: 1px solid rgba(3,240,121,.35);
+}
+
+.order-notice-ic{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #03F079 0%, #16a34a 100%);
+  color: #fff;
+  font-weight: 950;
+  font-size: 20px;
+  line-height: 1;
+  flex: 0 0 38px;
+}
+
+.order-notice-title{
+  font-weight: 950;
+  color: #0b1f33;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.order-notice-sub{
+  margin-top: 2px;
+  color: rgba(11,31,51,.75);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.profile-screen{
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;              /* по умолчанию скрыт */
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(2,6,23,.55);
+}
+
+.profile-box{
+  width: min(520px, 96vw);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.25);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-box h2{
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 950;
+  color: #0b1f33;
+}
+
+.profile-box input{
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.12);
+  padding: 0 12px;
+  font-weight: 800;
+  outline: none;
+}
+
+.profile-box button{
+  height: 46px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 950;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0b6cff, #1d4ed8);
+  color: #fff;
+}
+
+/* ===============================
+   FIX: CART BACK ARROW (CENTER + BOLD)
+   ВСТАВИТЬ САМЫМ ПОСЛЕДНИМ В style.css
+   =============================== */
+
+#cartBack.cart-back{
+  position: relative !important;
+
+  width: 44px !important;
+  height: 44px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 14px !important;
+
+  /* важное: убираем влияние пустого текста/line-height */
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+/* рисуем стрелку сами — строго по центру */
+#cartBack.cart-back::before{
+  content: "←";
+
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;          /* размер */
+  line-height: 1;
+  font-weight: 900;         /* жирность */
+  color: #fff;
+
+  /* чуть «утолщаем» визуально */
+  text-shadow:
+    0.6px 0 0 currentColor,
+   -0.6px 0 0 currentColor;
+}
+
+/* мобильная версия */
+@media (max-width: 720px){
+  #cartBack.cart-back{
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+  #cartBack.cart-back::before{
+    font-size: 22px;
+  }
+}
+/* ===============================
+   PROFILE (FINAL)
+   =============================== */
+
+.profile-screen{
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+  background: rgba(2,6,23,.55);
+}
+
+.profile-screen.hidden{
+  display: none !important;
+}
+
+.profile-box{
+  position: relative;
+
+  width: min(520px, 96vw);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.25);
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-box h2{
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 950;
+  color: #0b1f33;
+}
+
+.profile-box input{
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,.12);
+  padding: 0 12px;
+  font-weight: 800;
+  outline: none;
+}
+
+.profile-box button{
+  height: 46px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 950;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0b6cff, #1d4ed8);
+  color: #fff;
+}
+
+/* Кнопка закрыть (×) справа сверху */
+.profile-close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.92);
+
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  color: #0b1f33;
+
+  cursor: pointer;
+}
+/* ===============================
+   PROFILE: FIELDS + ICONS
+   =============================== */
+
+.profile-fields{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* общий блок с обводкой и фоном */
+.profile-field{
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
+  align-items: center;
+
+  padding: 10px 12px;
+  border-radius: 16px;
+
+  background: #f3f6fb;
+  border: 1px solid rgba(15,23,42,.10);
+}
+
+/* иконка слева */
+.pf-ic{
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(11,108,255,.10);
+  border: 1px solid rgba(11,108,255,.12);
+}
+
+.pf-ic svg{
+  width: 18px;
+  height: 18px;
+  fill: #0b6cff;
+}
+
+/* текст справа */
+.pf-body{
+  min-width: 0;
+}
+
+.pf-label{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(11,31,51,.60);
+  line-height: 1.2;
+}
+
+.pf-value{
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 950;
+  color: #0b1f33;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===============================
+   PROFILE CLOSE: ROUND + OUTSIDE
+   =============================== */
+.profile-close{
+  position: absolute;
+  top: -14px;
+  right: -14px;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: rgba(255,255,255,.98);
+
+  box-shadow: 0 12px 26px rgba(2,6,23,.18);
+
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  color: #0b1f33;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+@media (max-width: 720px){
+  .profile-close{
+    top: -12px;
+    right: -12px;
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+  }
+}
+/* ===============================
+   HISTORY HEAD (like cart)
+   =============================== */
+
+.history-head{
+  max-width: var(--shell-max, 1200px);
+  margin: 0 auto;
+  width: 100%;
+
+  padding: 18px 22px;
+  border-radius: 0 0 28px 28px;
+  box-shadow: var(--shadow);
+
+  background:
+    radial-gradient(1200px 300px at 20% 0%, rgba(255,255,255,.22), transparent 60%),
+    radial-gradient(900px 260px at 90% 100%, rgba(3,240,121,.18), transparent 55%),
+    linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 45%, #0b6cff 100%);
+
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.history-filters{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hist-select{
+  height: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(15,23,42,.12);
+  background: #fff;
+  color: #0b1f33;
+
+  font-weight: 900;
+  padding: 0 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.history-today{
+  user-select: none;
+  cursor: default;
+}
+
+.history-today-text{
+  font-size: 14px;
+  font-weight: 950;
+  color: #fff;
+  white-space: nowrap;
+  padding-right: 6px;
+}
+
+/* MOBILE */
+@media (max-width: 720px){
+  .history-head{
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 14px 14px !important;
+    border-radius: 0 0 22px 22px !important;
+
+    grid-template-columns: 40px 1fr !important;
+    grid-template-areas:
+      "back today"
+      "filters filters";
+    row-gap: 10px;
+  }
+
+  #historyBack{ grid-area: back; }
+  .history-today{ grid-area: today; justify-self: end; }
+  .history-filters{ grid-area: filters; grid-template-columns: 1fr 1fr 1fr; }
+
+  .hist-select{
+    height: 46px;
+    border-radius: 14px;
+  }
+}
+
+
+/* ================== HISTORY FILTER (DATE UX) ================== */
+
+.hist-filter{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Кнопки ‹ › */
+.hist-nav{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+
+.hist-nav:hover{
+  background: rgba(255,255,255,0.32);
+}
+
+.hist-nav:active{
+  transform: scale(0.94);
+}
+
+/* Блок с датой */
+.hist-datebox{
+  flex: 1;
+  min-width: 200px;
+}
+
+.hist-label{
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+
+/* input date */
+.hist-date{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 800;
+  background: #fff;
+  color: #0b1f33;
+  cursor: pointer;
+}
+
+/* TODAY PILL внутри history */
+.history-today{
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+  border-radius: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s ease, transform .15s ease;
+}
+
+.history-today:hover{
+  background: rgba(255,255,255,0.32);
+}
+
+.history-today:active{
+  transform: scale(0.96);
+}
+
+.history-today .nav-circle{
+  width: 28px;
+  height: 28px;
+}
+
+.history-today .nav-ic{
+  width: 18px;
+  height: 18px;
+  fill: #fff;
+}
+
+.history-today-text{
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* ================== MOBILE ================== */
+@media (max-width: 520px){
+  .hist-filter{
+    gap: 8px;
+  }
+
+  .hist-nav{
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
+
+  .hist-date{
+    height: 40px;
+  }
+
+  .history-today{
+    padding: 0 10px;
+  }
+
+  .history-today-text{
+    font-size: 13px;
+  }
+}
+/* ================== HISTORY HEADER ================== */
+
+.history-head{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* общий контейнер фильтра */
+.hist-filter{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* кнопки ◀ ▶ */
+.hist-nav{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255,255,255,.22);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+
+.hist-nav:hover{
+  background: rgba(255,255,255,.32);
+}
+
+.hist-nav:active{
+  transform: scale(.95);
+}
+
+/* блок даты */
+.hist-datebox{
+  flex: 1;
+  min-width: 200px;
+}
+
+.hist-label{
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  opacity: .9;
+  margin-bottom: 6px;
+}
+
+/* input date */
+.hist-date{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 800;
+  background: #fff;
+  color: #0b1f33;
+  cursor: pointer;
+}
+
+/* TODAY pill */
+.history-today{
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.22);
+  color: #fff;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+
+.history-today:hover{
+  background: rgba(255,255,255,.32);
+}
+
+.history-today:active{
+  transform: scale(.96);
+}
+
+.history-today .nav-circle{
+  width: 28px;
+  height: 28px;
+}
+
+.history-today .nav-ic{
+  width: 18px;
+  height: 18px;
+  fill: #fff;
+}
+
+/* ================== MOBILE ================== */
+
+@media (max-width: 560px){
+  .history-head{
+    gap: 10px;
+  }
+
+  .hist-filter{
+    gap: 8px;
+  }
+
+  .hist-nav{
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
+
+  .hist-date{
+    height: 40px;
+  }
+
+  .history-today{
+    padding: 0 10px;
+    font-size: 13px;
+  }
+}
+/* ===============================
+   HISTORY HEADER = CART HEADER (FINAL)
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+
+.history-head{
+  /* используем тот же cart-head стиль, только сетку меняем */
+  display: grid !important;
+  grid-template-columns: 44px 1fr auto auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* блок фильтров (год/месяц/день) */
+.history-filters{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+/* селекты как белые поля (как поиск в корзине) */
+.history-select{
+  height: 50px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(15,23,42,.12) !important;
+  background: #fff !important;
+  color: #0b1f33 !important;
+
+  font-weight: 900 !important;
+  padding: 0 12px !important;
+  outline: none !important;
+  cursor: pointer !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* чтобы pills справа были как в корзине */
+.history-count,
+.history-total{
+  justify-self: end !important;
+}
+
+/* ===== MOBILE: как в корзине (2 строки) ===== */
+@media (max-width: 720px){
+
+  .history-head{
+    grid-template-columns: 40px 1fr max-content max-content !important;
+    grid-template-areas:
+      "back filters filters filters"
+      "spacer spacer count total" !important;
+    row-gap: 10px !important;
+    column-gap: 10px !important;
+  }
+
+  #historyBack{ grid-area: back !important; }
+
+  .history-filters{
+    grid-area: filters !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+
+  .history-count{ grid-area: count !important; }
+  .history-total{ grid-area: total !important; }
+
+  /* селекты компактнее как search на мобилке */
+  .history-select{
+    height: 46px !important;
+    border-radius: 14px !important;
+    padding: 0 10px !important;
+    font-size: 13px !important;
+  }
+
+  /* чтобы цифры справа не переносились */
+  .history-count{ min-width: 86px !important; }
+  .history-total{ min-width: 132px !important; }
+
+  /* круг иконки не сжимать */
+  .history-count .nav-circle,
+  .history-total .nav-circle{
+    flex: 0 0 34px !important;
+  }
+}
+/* ===============================
+   HISTORY SELECT — WITH ARROW
+   =============================== */
+
+.history-select{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  height: 50px;
+  width: 100%;
+
+  border-radius: 16px;
+  border: 1px solid rgba(15,23,42,.12);
+  background-color: #fff;
+
+  /* отступы как у поиска */
+  padding: 0 42px 0 16px;
+
+  font-size: 14px;
+  font-weight: 900;
+  color: #0b1f33;
+
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+
+  /* СТРЕЛКА */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1f33' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 18px;
+}
+
+/* hover / focus */
+.history-select:hover{
+  border-color: rgba(15,23,42,.25);
+}
+
+.history-select:focus{
+  border-color: #0b6cff;
+}
+
+/* убираем IE-стрелку */
+.history-select::-ms-expand{
+  display: none;
+}
+
+/* MOBILE */
+@media (max-width: 720px){
+  .history-select{
+    height: 46px;
+    border-radius: 14px;
+
+    padding: 0 38px 0 14px;
+    font-size: 13px;
+
+    background-position: right 14px center;
+    background-size: 16px;
+  }
+}
+/* HISTORY BACK — тот же внутренний отступ слева, что у CART BACK */
+#historyBack.cart-back::before{
+  left: calc(50% + 2px) !important; /* регулируй: 1–3px */
+}
+/* ===== HISTORY: стрелка для select (Год/Месяц/День) ===== */
+.history-select{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  padding-right: 44px;            /* место под стрелку */
+  background-color: #fff;
+
+  /* стрелка (SVG) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%230B1F33' d='M7 10l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px 18px;
+}
+
+/* убрать системную стрелку в старом IE/Edge */
+.history-select::-ms-expand{
+  display: none;
+}
+/* ===============================
+   HISTORY SELECT — FORCE ARROW (OVERRIDE IMPORTANT)
+   =============================== */
+
+.history-select,
+.hist-select{
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+
+  padding-right: 44px !important;      /* место под стрелку */
+  background-color: #fff !important;   /* вместо background */
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1f33' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 18px 18px !important;
+}
+
+/* убрать системную стрелку в старом IE/Edge */
+.history-select::-ms-expand,
+.hist-select::-ms-expand{
+  display: none;
+}
+
+@media (max-width: 720px){
+  .history-select,
+  .hist-select{
+    padding-right: 40px !important;
+    background-position: right 12px center !important;
+    background-size: 16px 16px !important;
+  }
+}
+/* ===============================
+   HISTORY: dropdown как search-dd (кастом)
+   =============================== */
+
+/* прячем нативные select, но оставляем в DOM для логики */
+.history-select.js-native-hidden{
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 1px !important;
+  height: 1px !important;
+}
+
+/* контейнер одного фильтра */
+.hist-dd{
+  position: relative;
+  width: 100%;
+}
+
+/* кнопка — используем ваш стиль search-dd-btn */
+.history-filters .search-dd-btn{
+  height: 50px;
+  border-radius: 16px;
+}
+
+/* на мобилке */
+@media (max-width: 720px){
+  .history-filters .search-dd-btn{
+    height: 46px;
+    border-radius: 14px;
+  }
+}
+/* ===============================
+   HISTORY DROPDOWN: SCROLL INSIDE MENU
+   =============================== */
+
+/* только для истории */
+#historyScreen .search-dd-menu{
+  max-height: 320px;              /* высота меню */
+  overflow-y: auto;               /* скролл внутри */
+  overscroll-behavior: contain;   /* чтобы страница не “тянулась” */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* мобилка — ниже */
+@media (max-width: 720px){
+  #historyScreen .search-dd-menu{
+    max-height: 260px;
+  }
+}
+/* ===============================
+   HISTORY: ORDERS COUNT WIDTH
+   =============================== */
+
+.history-count{
+  min-width: 100px;      /* было меньше — делаем шире */
+  /* внутренний отступ справа */
+}
+
+/* чтобы число не переносилось */
+.history-count .cart-count-text{
+  white-space: nowrap;
+}
+
+/* мобилка */
+@media (max-width: 720px){
+  .history-count{
+    min-width: 130px;
+  }
+}
+/* ===== FORCE: HISTORY SCREEN VISIBLE ON MOBILE ===== */
+#historyScreen{
+  position: fixed;
+  inset: 0;
+  z-index: 9000;            /* выше шапки */
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+#historyScreen.hidden{
+  display: none !important;
+}
+
+/* чтобы на мобилке ничего не “съедало” экран */
+@media (max-width: 720px){
+  #historyScreen{
+    padding: 0 !important;
+  }
+}
+
+/* если хотите скрывать основной контент при истории */
+body.history-open .content{
+  display: none !important;
+}
+/* ===============================
+   HISTORY (MOBILE) — FIX: content visible + scroll
+   ВСТАВИТЬ В САМЫЙ КОНЕЦ style.css
+   =============================== */
+
+#historyScreen .cart-scroll{
+  flex: 1 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 12px !important;
+}
+
+#historyScreen .products-wrap{
+  padding: 12px 14px 18px !important;
+}
+
+/* если история рендерится теми же строками, что товары/корзина */
+@media (max-width: 720px){
+
+  /* ОТМЕНЯЕМ ваши mobile-скрытия колонок ТОЛЬКО В ИСТОРИИ */
+  #historyScreen .product-row .pr-name,
+  #historyScreen .product-row .pr-type,
+  #historyScreen .product-row .pr-manufacturer,
+  #historyScreen .product-row .pr-expiry,
+  #historyScreen .product-row .pr-price{
+    display: block !important;
+  }
+
+  /* если у вас в истории есть pr-mobileline — тоже показываем */
+  #historyScreen .product-row .pr-mobileline{
+    display: flex !important;
+  }
+
+  /* делаем строку истории нормальной карточкой */
+  #historyScreen .product-row{
+    grid-template-columns: 1fr auto !important;
+    grid-template-areas: none !important;
+    padding: 12px 12px !important;
+    border-radius: 14px !important;
+    row-gap: 6px !important;
+  }
+
+  /* текст в истории */
+  #historyScreen .product-row .pr-col{
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+/* ===== HISTORY LIST (separate from product-row) ===== */
+.hist-item{
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, .10);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, .06);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 12px 0;
+}
+
+.hist-col{
+  min-width: 0;
+}
+
+.hist-col-right{
+  text-align: right;
+  flex: 0 0 auto;
+}
+
+.hist-label{
+  font-size: 12px;
+  font-weight: 800;
+  opacity: .70;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.hist-value{
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+/* mobile: keep two columns always */
+@media (max-width: 720px){
+  .hist-item{
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+}
+/* =========================================================
+   HISTORY (MOBILE ONLY): TOP = COUNT+SUM RIGHT, BOTTOM = Y/M/D FULL WIDTH
+   ВСТАВИТЬ САМЫМ ПОСЛЕДНИМ В css/style.css
+   ========================================================= */
+
+@media (max-width: 720px){
+
+  /* Шапка истории: 2 строки:
+     1) back + (count+sum справа)
+     2) фильтры год/месяц/день снизу во всю ширину */
+  #historyScreen .history-head{
+    display: grid !important;
+    grid-template-columns: 40px 1fr max-content max-content !important;
+    grid-template-areas:
+      "back spacer count total"
+      "filters filters filters filters" !important;
+
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 10px !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* элементы по зонам */
+  #historyScreen #historyBack{ grid-area: back !important; }
+  #historyScreen .history-count{ grid-area: count !important; justify-self: end !important; }
+  #historyScreen .history-total{ grid-area: total !important; justify-self: end !important; }
+
+  /* Фильтры снизу, во всю ширину как поиск в корзине */
+  #historyScreen .history-filters{
+    grid-area: filters !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 10px !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Селекты как белые поля (как поиск в корзине) */
+  #historyScreen .history-select{
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 46px !important;
+    border-radius: 14px !important;
+
+    background: #fff !important;
+    border: 1px solid rgba(15,23,42,.12) !important;
+
+    padding: 0 12px !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    color: #0b1f33 !important;
+  }
+
+  /* Чтобы сумма/кол-во всегда были сверху справа и не переносились */
+  #historyScreen .history-count,
+  #historyScreen .history-total{
+    white-space: nowrap !important;
+    min-width: max-content !important;
+  }
+
+  /* подстройка ширины, чтобы "0 c" и число не ломались */
+  #historyScreen .history-total{ min-width: 132px !important; padding-right: 12px !important; }
+  #historyScreen .history-count{ min-width: 86px !important; padding-right: 12px !important; }
+
+  /* круги иконок не сжимаем */
+  #historyScreen .history-total .nav-circle,
+  #historyScreen .history-count .nav-circle{
+    flex: 0 0 34px !important;
+  }
+}
+/* =========================================================
+   HISTORY (MOBILE ONLY) — SUM + COUNT STRICTLY RIGHT (FIX)
+   ВСТАВИТЬ САМЫМ ПОСЛЕДНИМ В style.css
+   ========================================================= */
+@media (max-width: 720px){
+
+  /* Шапка истории: 2 строки */
+  #historyScreen .history-head{
+    display: grid !important;
+    grid-template-columns: 40px 1fr max-content max-content !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    row-gap: 10px !important;
+
+    /* важно: не даём старым стилям “end/center” ломать сетку */
+    justify-items: stretch !important;
+  }
+
+  /* Back слева сверху */
+  #historyScreen #historyBack{
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: start !important;
+  }
+
+  /* COUNT справа сверху */
+  #historyScreen .history-count{
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    min-width: 110px !important;      /* чтобы “28” не съезжало */
+    padding-right: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* TOTAL справа сверху (самая правая) */
+  #historyScreen .history-total{
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+
+    min-width: 150px !important;      /* чтобы “1721с” не съезжало */
+    padding-right: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Ключевое: перебиваем ваш общий mobile-стиль .nav-pill (где вы центрировали) */
+  #historyScreen .history-head .nav-pill{
+    justify-content: flex-end !important;
+    min-width: 0 !important;
+  }
+
+  /* Фильтры снизу, во всю ширину */
+  #historyScreen .history-filters{
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  #historyScreen .history-select{
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 46px !important;
+    border-radius: 14px !important;
+  }
+}
+/* ================= HISTORY: vertical center in each card ================= */
+#historyList > *{
+  display: flex;
+  align-items: center; /* вертикальное выравнивание по центру */
+  gap: 12px;
+}
+
+/* если внутри карточки есть колонки/ячейки */
+#historyList > * > *{
+  min-height: 44px;
+  display: flex;
+  align-items: center; /* вертикальное выравнивание текста в колонке */
+}
+
+/* если у вас внутри есть блок с несколькими строками (дата+статус) */
+#historyList .is-col,
+#historyList .col,
+#historyList .meta{
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* центр по вертикали внутри колонки */
+}
+/* =========================================================
+   HISTORY LIST — FORCE TEXT VISIBLE (FINAL OVERRIDE)
+   В САМЫЙ КОНЕЦ css/style.css
+   ========================================================= */
+
+/* 1) Базово: все внутри списка истории делаем видимым и тёмным */
+#historyList, 
+#historyList *{
+  color: #0b1f33 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 2) Убираем обрезку текста */
+#historyList *{
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word !important;
+}
+
+/* 3) Если история использует ваши карточки .hist-item */
+#historyList .hist-item{
+  background: #fff !important;
+  border: 1px solid rgba(15,23,42,.10) !important;
+}
+#historyList .hist-label{
+  color: rgba(11,31,51,.65) !important;
+}
+
+/* 4) Если история рендерится как .product-row (часто так бывает) */
+#historyScreen .product-row{
+  display: grid !important;
+  background: #fff !important;
+}
+#historyScreen .product-row .pr-col,
+#historyScreen .product-row .pr-name,
+#historyScreen .product-row .pr-type,
+#historyScreen .product-row .pr-manufacturer,
+#historyScreen .product-row .pr-expiry,
+#historyScreen .product-row .pr-price{
+  display: block !important;         /* перебиваем ваши mobile hide */
+  color: #0b1f33 !important;
+  opacity: 1 !important;
+}
+
+/* 5) На мобилке: не скрывать элементы истории даже если в товарах скрываете */
+@media (max-width: 720px){
+  #historyScreen .product-row .pr-name,
+  #historyScreen .product-row .pr-type,
+  #historyScreen .product-row .pr-manufacturer,
+  #historyScreen .product-row .pr-expiry,
+  #historyScreen .product-row .pr-price{
+    display: block !important;
+  }
+}
+/* =========================================
+   HISTORY: убрать "Дата заказа" и "Сумма"
+   ========================================= */
+
+/* скрываем подписи */
+#historyList .hist-label,
+#historyList .order-label,
+#historyList .date-label,
+#historyList .sum-label{
+  display: none !important;
+}
