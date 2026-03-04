@@ -2,15 +2,8 @@
 // ========== APP.JS LOADED ==========
 console.log("[APP.JS] Script loaded");
 
-// ====== REQUIRE AUTH (MUST BE FIRST) ======
-(function requireAuth(){
-  const authed = localStorage.getItem("client-auth") === "true";
-  const client = localStorage.getItem("client");
-
-  if (!authed || !client) {
-    location.replace("auth.html");
-  }
-})();
+const CLIENT_AUTH_KEY = "client-auth";
+const CLIENT_DATA_KEY = "client";
 
 
 const DEFAULT_IMAGE = "img/products/2323.jpg";
@@ -168,7 +161,7 @@ window.closeProfileScreen = function closeProfileScreen() {
 
 function getClient() {
   try {
-    const raw = localStorage.getItem("client");
+    const raw = localStorage.getItem(CLIENT_DATA_KEY);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -177,7 +170,30 @@ function getClient() {
 }
 
 function setClient(clientObj) {
-  localStorage.setItem("client", JSON.stringify(clientObj));
+  localStorage.setItem(CLIENT_DATA_KEY, JSON.stringify(clientObj));
+}
+
+function setProfileAction(mode) {
+  if (!profileLogoutBtn) return;
+
+  if (mode === "auth-required") {
+    profileLogoutBtn.textContent = "Перейти к авторизации";
+    profileLogoutBtn.onclick = () => {
+      window.location.href = "auth.html";
+    };
+    return;
+  }
+
+  profileLogoutBtn.textContent = "Выйти из профиля";
+  profileLogoutBtn.onclick = logoutClient;
+}
+
+function showProfileAuthRequired() {
+  setText(pfFullName, "Сначала авторизуйтесь");
+  setText(pfPhone, "—");
+  setText(pfEmail, "Откройте auth.html");
+  setText(pfPharmacy, "—");
+  setProfileAction("auth-required");
 }
 
 async function fetchCustomerFromDb(customerId){
@@ -192,11 +208,14 @@ async function fetchCustomerFromDb(customerId){
 
 async function openProfileScreen() {
   const client = getClient();
+  const authed = localStorage.getItem(CLIENT_AUTH_KEY) === "true";
 
-  if (!client || !client.id) {
-    fillProfileView(client || {});
+  if (!authed || !client || !client.id) {
+    showProfileAuthRequired();
     return;
   }
+
+  setProfileAction("logout");
 
   try {
     const fresh = await fetchCustomerFromDb(client.id);
@@ -209,13 +228,11 @@ async function openProfileScreen() {
 }
 
 function logoutClient() {
-  localStorage.removeItem("client-auth");
-  localStorage.removeItem("client");
+  localStorage.removeItem(CLIENT_AUTH_KEY);
+  localStorage.removeItem(CLIENT_DATA_KEY);
   window.closeProfileScreen();
   window.location.href = "auth.html";
 }
-
-if (profileLogoutBtn) profileLogoutBtn.addEventListener("click", logoutClient);
 
 /**
  * Handler for profile button click
@@ -223,8 +240,17 @@ if (profileLogoutBtn) profileLogoutBtn.addEventListener("click", logoutClient);
 window.handleProfileButtonClick = function(e) {
   e?.preventDefault?.();
   e?.stopPropagation?.();
+  e?.stopImmediatePropagation?.();
   openProfileScreenOverlay();
+  return false;
 };
+
+const accountBtn = document.querySelector(".account-btn");
+if (accountBtn) {
+  accountBtn.addEventListener("click", (e) => {
+    window.handleProfileButtonClick(e);
+  }, { capture: true });
+}
 
 
 const orderNotice = document.getElementById("orderNotice");
@@ -600,7 +626,7 @@ function closeImage() {
 
 /* ================== AUTH / PROFILE ================== */
 function isClientAuthed() {
-  return localStorage.getItem("client-auth") === "true";
+  return localStorage.getItem(CLIENT_AUTH_KEY) === "true";
 }
 
 
