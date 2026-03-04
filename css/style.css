@@ -1094,60 +1094,43 @@ body{
     height: 56px;
   }
 
-   /* показать мобильную строку */
-  .pr-mobileline{ display:flex !important; }
-
-  /* скрыть ПК колонки только на мобилке */
-  .pr-name, .pr-type, .pr-manufacturer, .pr-expiry, .pr-price{
-    display:none !important;
-  }
-
-  /* 2 строки: (img+line) и (qty+button) */
+  /* Мобильная версия без pr-mobileline - используем основные колонки */
   .product-row{
     display:grid !important;
     grid-template-columns: 62px 1fr;
     grid-template-areas:
-      "img line"
-      "qty action";
+      "img name"
+      "img type"
+      "action action";
     column-gap: 12px;
-    row-gap: 10px;
+    row-gap: 6px;
     align-items:center;
   }
 
   .pr-img{ grid-area: img; }
-  .pr-mobileline{ grid-area: line; }
-
-  .pr-mobileline{
-    align-items:center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 850;
-    color: rgba(11,31,51,.78);
+  .pr-name{ 
+    grid-area: name; 
+    display: block !important; 
+    font-size: 14px; 
+    font-weight: 950;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
   }
-  .pr-mobileline .m-name{
-    font-weight: 950;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .pr-mobileline .m-meta{
-    color: rgba(11,31,51,.72);
-    min-width: 0;
+  .pr-type{ 
+    grid-area: type; 
+    display: block !important; 
+    font-size: 11px; 
+    color: rgba(11,31,51,.65);
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .pr-mobileline .m-dot{
-    color: rgba(11,31,51,.35);
-    font-weight: 900;
-    flex: 0 0 auto;
+  .pr-manufacturer, .pr-expiry, .pr-price{
+    display:none !important;
   }
-  .pr-mobileline .m-price{
-    margin-left: auto;
-    font-weight: 950;
-    flex: 0 0 auto;
-  }
+  
+  .pr-action{ grid-area: action; }
 
   /* qty + button в одной строке */
   .pr-qty{

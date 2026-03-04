@@ -352,23 +352,7 @@ function productCard(p) {
   }
 </div>
 
-<!-- MOBILE ONLY (на ПК будет скрыто CSS) -->
-<div class="pr-col pr-mobileline">
-  <div class="m-name">${p.name}</div>
-
-  <div class="m-sub">
-    <span class="m-meta">${p.type || "—"}</span>
-    <span class="m-dot">•</span>
-    <span class="m-meta">${manufacturer}</span>
-    <span class="m-dot">•</span>
-    <span class="m-meta">${expiry}</span>
-  </div>
-
-  <div class="m-price">${p.price} c</div>
-</div>
-
-
-<!-- ПК-колонки (вернули как было) -->
+<!-- ПК-колонки -->
 <div class="pr-col pr-name">${p.name}</div>
 <div class="pr-col pr-type">${p.type || "—"}</div>
 <div class="pr-col pr-manufacturer">${manufacturer}</div>
