@@ -1,30 +1,6 @@
 
 // ========== APP.JS LOADED ==========
-console.log("[APP.JS] Script loaded at", new Date().toISOString());
-console.log("[APP.JS] Location:", window.location.href);
-
-// ===== ЗАЩИТА: Блокируем редирект в админ панель только на КЛИЕНТСКИХ страницах =====
-// На admin.html этот скрипт не загружается, поэтому там нет проблем
-// На index.html мы не хотим, чтобы что-то редиректило в админ панель
-if (!window.location.pathname.includes('/admin/')) {
-  const originalSetHref = Object.getOwnPropertyDescriptor(Location.prototype, 'href');
-  Object.defineProperty(window.location, 'href', {
-    set: function(value) {
-      console.warn("[NAVIGATION] Attempting to navigate to:", value);
-      
-      // Блокируем редирект на админ панель, но разрешаем всё остальное
-      if (value.includes('/admin/admin.html') || value.includes('/admin.html')) {
-        console.error("[SECURITY] BLOCKED: Trying to redirect to admin.html from client page!");
-        console.log(new Error().stack);
-        return; // Block it
-      }
-      originalSetHref.set.call(this, value);
-    },
-    get: function() {
-      return originalSetHref.get.call(this);
-    }
-  });
-}
+console.log("[APP.JS] Script loaded");
 
 // ====== REQUIRE AUTH (MUST BE FIRST) ======
 (function requireAuth(){
@@ -222,38 +198,12 @@ function logoutClient() {
 if (profileLogoutBtn) profileLogoutBtn.addEventListener("click", logoutClient);
 
 /**
- * Прямой обработчик клика на кнопку профиля (вызывается из HTML через onclick)
- * ГЛАВНОЕ: на index.html может быть только авторизованный клиент!
+ * Handler for profile button click
  */
 window.handleProfileButtonClick = function(e) {
-  const timestamp = new Date().toISOString();
-  const currentUrl = window.location.href;
-  const isAdminPanel = currentUrl.includes('/admin/') || currentUrl.includes('admin.html');
-  
-  console.log("[PROFILE]", timestamp);
-  console.log("[PROFILE] Current URL:", currentUrl);
-  console.log("[PROFILE] Is Admin Panel:", isAdminPanel);
-  console.log("[PROFILE] Event:", e?.type);
-  console.log("[PROFILE] clientAuth from localStorage:", localStorage.getItem("client-auth"));
-  console.log("[PROFILE] admin cookie would check against:", "/api/admin/products");
-  
-  try {
-    e?.preventDefault?.();
-    e?.stopPropagation?.();
-    console.log("[PROFILE] preventDefault and stopPropagation called");
-  } catch (err) {
-    console.error("[PROFILE] Error preventing default:", err);
-  }
-  
-  console.log("[PROFILE] About to call openProfileScreenOverlay()");
-  
-  try {
-    openProfileScreenOverlay();
-    console.log("[PROFILE] openProfileScreenOverlay() completed");
-  } catch (err) {
-    console.error("[PROFILE] ERROR calling openProfileScreenOverlay():", err.message);
-    console.error(err.stack);
-  }
+  e?.preventDefault?.();
+  e?.stopPropagation?.();
+  openProfileScreenOverlay();
 };
 
 
