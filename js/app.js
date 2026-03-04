@@ -375,14 +375,8 @@ function productCard(p) {
 <div class="pr-col pr-expiry">${expiry}</div>
 <div class="pr-col pr-price">${p.price} c</div>
 
-<div class="pr-col pr-qty">
-  <button onclick="decQty(${id})">−</button>
-  <input id="qty_${id}" type="text" value="1" readonly>
-  <button onclick="incQty(${id})">+</button>
-</div>
-
 <div class="pr-col pr-action">
-  <button onclick="addToCartFromCard(${id})">В корзину</button>
+  <button onclick="openQtyModal(${id})">В корзину</button>
 </div>
   `;
 
@@ -413,11 +407,10 @@ if (cartScreen && !cartScreen.classList.contains("hidden")) {
 
 }
 
-function addToCartFromCard(id) {
-  const qtyInput = document.getElementById(`qty_${id}`);
-  const qty = Number(qtyInput?.value || 1);
-
+function addToCartFromCard(id, qty) {
+  qty = Math.max(1, Number(qty) || 1);
   addToCart(id, qty);
+  closeQtyModal();
 
   // берём строку товара
   const row = qtyInput?.closest(".product-row");
@@ -922,14 +915,91 @@ if (navCartBtn) {
 }
 
 
-function incQty(id) {
-  const i = document.getElementById(`qty_${id}`);
-  i.value = Number(i.value) + 1;
+// ================== QUANTITY MODAL ==================
+let currentQtyProductId = null;
+
+const qtyModal = document.getElementById("qtyModal");
+const qtyInput = document.getElementById("qtyInput");
+const qtyMinusBtn = document.getElementById("qtyMinusBtn");
+const qtyPlusBtn = document.getElementById("qtyPlusBtn");
+const qtyConfirmBtn = document.getElementById("qtyConfirmBtn");
+const qtyModalTitle = document.getElementById("qtyModalTitle");
+const qtyPrice = document.getElementById("qtyPrice");
+const qtyQty = document.getElementById("qtyQty");
+const qtyTotal = document.getElementById("qtyTotal");
+
+function openQtyModal(id) {
+  currentQtyProductId = id;
+  const product = products.find(p => p.id == id);
+  
+  if (!product) return;
+  
+  qtyModalTitle.textContent = product.name;
+  qtyPrice.textContent = product.price;
+  qtyInput.value = 1;
+  
+  updateQtyModalDisplay();
+  
+  if (qtyModal) {
+    qtyModal.classList.remove("hidden");
+    qtyInput.focus();
+  }
 }
 
-function decQty(id) {
-  const i = document.getElementById(`qty_${id}`);
-  i.value = Math.max(1, Number(i.value) - 1);
+function closeQtyModal() {
+  if (qtyModal) {
+    qtyModal.classList.add("hidden");
+  }
+  currentQtyProductId = null;
+}
+
+function updateQtyModalDisplay() {
+  const product = products.find(p => p.id == currentQtyProductId);
+  if (!product) return;
+  
+  const qty = Math.max(1, Number(qtyInput.value) || 1);
+  const price = Number(product.price) || 0;
+  const total = price * qty;
+  
+  qtyQty.textContent = qty;
+  qtyTotal.textContent = formatMoney(total);
+}
+
+// Bind quantity modal controls
+if (qtyMinusBtn) {
+  qtyMinusBtn.addEventListener("click", () => {
+    qtyInput.value = Math.max(1, Number(qtyInput.value) - 1);
+    updateQtyModalDisplay();
+  });
+}
+
+if (qtyPlusBtn) {
+  qtyPlusBtn.addEventListener("click", () => {
+    qtyInput.value = Number(qtyInput.value) + 1;
+    updateQtyModalDisplay();
+  });
+}
+
+if (qtyInput) {
+  qtyInput.addEventListener("input", updateQtyModalDisplay);
+}
+
+if (qtyConfirmBtn) {
+  qtyConfirmBtn.addEventListener("click", () => {
+    const qty = Math.max(1, Number(qtyInput.value) || 1);
+    if (currentQtyProductId !== null) {
+      addToCartFromCard(currentQtyProductId, qty);
+    }
+  });
+}
+
+// Allow Enter key to confirm
+if (qtyInput) {
+  qtyInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      qtyConfirmBtn?.click();
+    }
+  });
 }
 
 
