@@ -900,6 +900,11 @@ if (navCartBtn) {
 
 
 // ================== QUANTITY MODAL ==================
+function formatMoney(n){
+  const x = Number(n) || 0;
+  return x.toLocaleString("ru-RU");
+}
+
 let currentQtyProductId = null;
 let currentQtyValue = 1;
 
