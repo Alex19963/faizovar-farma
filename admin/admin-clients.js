@@ -26,7 +26,13 @@
 
   view: "orders",        // "orders" | "order"
   selectedOrderId: null,
-  orderFull: null        // { order, items }
+  orderFull: null,        // { order, items }
+  
+  // === Кеширование и оптимизация загрузки ===
+  isLoadingClients: false,
+  clientsLoadedAt: null,
+  clientsLoadAbortController: null,
+  CACHE_DURATION_MS: 5 * 60 * 1000  // 5 минут
 };
 
 const el = {
@@ -1294,25 +1300,8 @@ async function setMainSection(section) {
     return;
   }
 
-  // Switching back from products must always restore clients list on the left
-  renderClients(el.clientSearch?.value || "");
-
-  if (!state.selectedClientId) {
-    renderNoClientState();
-    return;
-  }
-
-  if (state.mainSection === "clients") {
-    await renderClientDetails();
-    return;
-  }
-
-  if (state.mainSection === "reports") {
-    await renderReportsView();
-    return;
-  }
-
-  await loadOrders();
+  // Загружаем клиентов с кешем (или используем кешированные данные)
+  await loadClients();
 }
 
 async function fetchJSON(url, options = {}) {
@@ -1333,34 +1322,90 @@ async function fetchJSON(url, options = {}) {
 
 /* ================= LOAD CLIENTS ================= */
 
+/**
+ * Загружает клиентов с кешированием на 5 минут.
+ * Избегает повторных запросов и гонки данных через AbortController.
+ */
 async function loadClients() {
   if (state.mainSection === "products") return;
-  const data = await fetchJSON("/api/admin/customers");
-  state.clients = data || [];
 
-  const now = new Date();
-if (el.yearSelect)  el.yearSelect.value  = now.getFullYear();
-if (el.monthSelect) el.monthSelect.value = now.getMonth() + 1;
+  // Если уже загружаются – не запускать ещё один запрос
+  if (state.isLoadingClients) {
+    return;
+  }
 
-  renderClients();
-  updateClientUiState();
+  // Если данные свежие (загружены в течение 5 минут) – использовать кеш
+  const now = Date.now();
+  if (
+    state.clients.length > 0 &&
+    state.clientsLoadedAt &&
+    now - state.clientsLoadedAt < state.CACHE_DURATION_MS
+  ) {
+    // Данные свежие, просто отобразить их
+    renderClients();
+    updateClientUiState();
+    continueLoadClientDetails();
+    return;
+  }
 
+  // Отменить старый запрос, если он ещё выполняется
+  if (state.clientsLoadAbortController) {
+    state.clientsLoadAbortController.abort();
+  }
+
+  state.isLoadingClients = true;
+  state.clientsLoadAbortController = new AbortController();
+
+  try {
+    const res = await fetch("/api/admin/customers", {
+      signal: state.clientsLoadAbortController.signal,
+      credentials: "include"
+    });
+
+    if (!res.ok) throw new Error("Ошибка загрузки клиентов: " + res.status);
+
+    const data = await res.json();
+    state.clients = data || [];
+    state.clientsLoadedAt = now;
+
+    const nowTime = new Date();
+    if (el.yearSelect) el.yearSelect.value = nowTime.getFullYear();
+    if (el.monthSelect) el.monthSelect.value = nowTime.getMonth() + 1;
+
+    renderClients();
+    updateClientUiState();
+    continueLoadClientDetails();
+  } catch (err) {
+    if (err.name !== "AbortError") {
+      console.error("Ошибка при загрузке клиентов:", err);
+    }
+  } finally {
+    state.isLoadingClients = false;
+    state.clientsLoadAbortController = null;
+  }
+}
+
+/**
+ * Продолжает загрузку деталей клиента после загрузки списка.
+ * Выделена в отдельную функцию для переиспользования.
+ */
+function continueLoadClientDetails() {
   if (!state.selectedClientId) {
     renderNoClientState();
     return;
   }
 
   if (state.mainSection === "clients") {
-    await renderClientDetails();
+    renderClientDetails();
     return;
   }
 
   if (state.mainSection === "reports") {
-    await renderReportsView();
+    renderReportsView();
     return;
   }
 
-  await loadOrders();
+  loadOrders();
 }
 
 function renderClients(filterText = "") {
@@ -3090,7 +3135,15 @@ async function toggleCurrentOrderStatus(nextStatus){
       credentials: "include",
       body: JSON.stringify({ status: nextStatus })
     });
-    if (!res.ok) throw new Error("Не удалось обновить статус");
+
+    // try to parse server response to show a helpful message
+    let data = null;
+    try { data = await res.json(); } catch (_) {}
+
+    if (!res.ok) {
+      // if backend provided a message – show it
+      throw new Error(data?.message || `Не удалось обновить статус (${res.status})`);
+    }
 
     state.tab = nextStatus === "done" ? "done" : "new";
     el.tabOrders?.classList.toggle("is-active", state.tab === "new");

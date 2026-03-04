@@ -148,14 +148,14 @@
         </button>
 
         <!-- PROFILE -->
-        <a href="#" class="nav-action nav-pill account-btn" aria-label="Профиль">
+        <button type="button" class="nav-action nav-pill account-btn" aria-label="Профиль" onclick="(function(){ console.log('[PROFILE-BTN] onclick firing at', window.location.href); window.handleProfileButtonClick(event); })()">
 
           <span class="nav-circle" aria-hidden="true">
             <svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
             </svg>
           </span>
-        </a>
+        </button>
 
       </div>
     </div>
@@ -376,6 +376,6 @@
 
 
 
-<script src="js/app.js"></script>
+<script src="js/app.js?v=6.0&t=20260304120200"></script>
 </body>
 </html>

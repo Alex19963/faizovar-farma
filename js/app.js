@@ -1,4 +1,31 @@
 
+// ========== APP.JS LOADED ==========
+console.log("[APP.JS] Script loaded at", new Date().toISOString());
+console.log("[APP.JS] Location:", window.location.href);
+
+// ===== ЗАЩИТА: Блокируем редирект в админ панель только на КЛИЕНТСКИХ страницах =====
+// На admin.html этот скрипт не загружается, поэтому там нет проблем
+// На index.html мы не хотим, чтобы что-то редиректило в админ панель
+if (!window.location.pathname.includes('/admin/')) {
+  const originalSetHref = Object.getOwnPropertyDescriptor(Location.prototype, 'href');
+  Object.defineProperty(window.location, 'href', {
+    set: function(value) {
+      console.warn("[NAVIGATION] Attempting to navigate to:", value);
+      
+      // Блокируем редирект на админ панель, но разрешаем всё остальное
+      if (value.includes('/admin/admin.html') || value.includes('/admin.html')) {
+        console.error("[SECURITY] BLOCKED: Trying to redirect to admin.html from client page!");
+        console.log(new Error().stack);
+        return; // Block it
+      }
+      originalSetHref.set.call(this, value);
+    },
+    get: function() {
+      return originalSetHref.get.call(this);
+    }
+  });
+}
+
 // ====== REQUIRE AUTH (MUST BE FIRST) ======
 (function requireAuth(){
   const authed = localStorage.getItem("client-auth") === "true";
@@ -119,8 +146,12 @@ function fillProfileView(client) {
 }
 
 function openProfileScreenOverlay() {
-  if (!profileScreen) return;
+  if (!profileScreen) {
+    console.error("[PROFILE] profileScreen element not found!");
+    return;
+  }
 
+  console.log("[PROFILE] openProfileScreenOverlay called");
   document.body.classList.add("cart-open");
   profileScreen.classList.remove("hidden");
   profileScreen.style.display = "";
@@ -190,6 +221,40 @@ function logoutClient() {
 
 if (profileLogoutBtn) profileLogoutBtn.addEventListener("click", logoutClient);
 
+/**
+ * Прямой обработчик клика на кнопку профиля (вызывается из HTML через onclick)
+ * ГЛАВНОЕ: на index.html может быть только авторизованный клиент!
+ */
+window.handleProfileButtonClick = function(e) {
+  const timestamp = new Date().toISOString();
+  const currentUrl = window.location.href;
+  const isAdminPanel = currentUrl.includes('/admin/') || currentUrl.includes('admin.html');
+  
+  console.log("[PROFILE]", timestamp);
+  console.log("[PROFILE] Current URL:", currentUrl);
+  console.log("[PROFILE] Is Admin Panel:", isAdminPanel);
+  console.log("[PROFILE] Event:", e?.type);
+  console.log("[PROFILE] clientAuth from localStorage:", localStorage.getItem("client-auth"));
+  console.log("[PROFILE] admin cookie would check against:", "/api/admin/products");
+  
+  try {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    console.log("[PROFILE] preventDefault and stopPropagation called");
+  } catch (err) {
+    console.error("[PROFILE] Error preventing default:", err);
+  }
+  
+  console.log("[PROFILE] About to call openProfileScreenOverlay()");
+  
+  try {
+    openProfileScreenOverlay();
+    console.log("[PROFILE] openProfileScreenOverlay() completed");
+  } catch (err) {
+    console.error("[PROFILE] ERROR calling openProfileScreenOverlay():", err.message);
+    console.error(err.stack);
+  }
+};
 
 
 const orderNotice = document.getElementById("orderNotice");
@@ -583,49 +648,10 @@ function closeProfileScreen() {
 
 
 
-// клик по иконке профиля
-// ================== PROFILE BUTTON CLICK (FIX) ==================
-(function bindProfileButton(){
-  // ВАЖНО: оставьте тот селектор, который реально есть в вашем HTML.
-  // Пока ставим несколько вариантов, чтобы точно сработало.
-  const btn =
-    document.querySelector(".account-btn") ||
-    document.querySelector(".nav-account") ||
-    document.querySelector(".nav-profile") ||
-    document.querySelector("[data-action='profile']");
-
-  if (!btn) {
-    console.warn("Кнопка профиля не найдена. Проверьте класс кнопки профиля в index.html");
-    return;
-  }
-
-  btn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // 1) Проверяем админа (cookie)
-    try {
-      const res = await fetch("/api/admin/products", {
-        method: "GET",
-        credentials: "include"
-      });
-
-      if (res.ok) {
-        window.location.href = "/admin/admin.html";
-        return;
-      }
-    } catch {}
-
-    // 2) Клиент: открываем профиль как корзину (оверлей)
-    if (isClientAuthed()) {
-      openProfileScreenOverlay();
-      return;
-    }
-
-    // 3) Никто не вошёл
-    window.location.href = "auth.html";
-  });
-})();
+// クリック по иконке профиля
+// ================== PROFILE BUTTON CLICK ==================
+// REMOVED bindProfileButton - using onclick handler instead
+// (See handleProfileButtonClick in window global scope)
 
 
 
