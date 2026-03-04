@@ -901,32 +901,31 @@ if (navCartBtn) {
 
 // ================== QUANTITY MODAL ==================
 let currentQtyProductId = null;
+let currentQtyValue = 1;
 
 const qtyModal = document.getElementById("qtyModal");
-const qtyInput = document.getElementById("qtyInput");
+const qtyDisplay = document.getElementById("qtyDisplay");
 const qtyMinusBtn = document.getElementById("qtyMinusBtn");
 const qtyPlusBtn = document.getElementById("qtyPlusBtn");
 const qtyConfirmBtn = document.getElementById("qtyConfirmBtn");
 const qtyModalTitle = document.getElementById("qtyModalTitle");
 const qtyPrice = document.getElementById("qtyPrice");
-const qtyQty = document.getElementById("qtyQty");
 const qtyTotal = document.getElementById("qtyTotal");
 
 function openQtyModal(id) {
   currentQtyProductId = id;
+  currentQtyValue = 1;
   const product = products.find(p => p.id == id);
   
   if (!product) return;
   
   qtyModalTitle.textContent = product.name;
   qtyPrice.textContent = product.price;
-  qtyInput.value = 1;
   
   updateQtyModalDisplay();
   
   if (qtyModal) {
     qtyModal.classList.remove("hidden");
-    qtyInput.focus();
   }
 }
 
@@ -935,53 +934,39 @@ function closeQtyModal() {
     qtyModal.classList.add("hidden");
   }
   currentQtyProductId = null;
+  currentQtyValue = 1;
 }
 
 function updateQtyModalDisplay() {
   const product = products.find(p => p.id == currentQtyProductId);
   if (!product) return;
   
-  const qty = Math.max(1, Number(qtyInput.value) || 1);
   const price = Number(product.price) || 0;
-  const total = price * qty;
+  const total = price * currentQtyValue;
   
-  qtyQty.textContent = qty;
+  qtyDisplay.textContent = currentQtyValue;
   qtyTotal.textContent = formatMoney(total);
 }
 
 // Bind quantity modal controls
 if (qtyMinusBtn) {
   qtyMinusBtn.addEventListener("click", () => {
-    qtyInput.value = Math.max(1, Number(qtyInput.value) - 1);
+    currentQtyValue = Math.max(1, currentQtyValue - 1);
     updateQtyModalDisplay();
   });
 }
 
 if (qtyPlusBtn) {
   qtyPlusBtn.addEventListener("click", () => {
-    qtyInput.value = Number(qtyInput.value) + 1;
+    currentQtyValue = currentQtyValue + 1;
     updateQtyModalDisplay();
   });
 }
 
-if (qtyInput) {
-  qtyInput.addEventListener("input", updateQtyModalDisplay);
-}
-
 if (qtyConfirmBtn) {
   qtyConfirmBtn.addEventListener("click", () => {
-    const qty = Math.max(1, Number(qtyInput.value) || 1);
     if (currentQtyProductId !== null) {
-      addToCartFromCard(currentQtyProductId, qty);
-    }
-  });
-}
-
-// Allow Enter key to confirm
-if (qtyInput) {
-  qtyInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      qtyConfirmBtn?.click();
+      addToCartFromCard(currentQtyProductId, currentQtyValue);
     }
   });
 }

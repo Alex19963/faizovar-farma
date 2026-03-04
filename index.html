@@ -375,25 +375,22 @@
 <!-- QUANTITY MODAL (для добавления товара в корзину) -->
 <div id="qtyModal" class="qty-modal hidden" onclick="closeQtyModal()">
   <div class="qty-modal-box" onclick="event.stopPropagation()">
-    <button class="qty-modal-close" type="button" onclick="closeQtyModal()" aria-label="Закрыть">×</button>
+    <h3 id="qtyModalTitle">Название товара</h3>
     
-    <h3 id="qtyModalTitle">Количество</h3>
+    <div class="qty-modal-sub">
+      Цена: <b id="qtyPrice">—</b>с &nbsp; Общая сумма: <b id="qtyTotal">—</b>
+    </div>
     
     <div class="qty-modal-controls">
-      <button id="qtyMinusBtn" class="qty-btn qty-minus" type="button" aria-label="Уменьшить">−</button>
-      <input id="qtyInput" type="number" min="1" step="1" value="1" inputmode="numeric">
-      <button id="qtyPlusBtn" class="qty-btn qty-plus" type="button" aria-label="Увеличить">+</button>
+      <button id="qtyMinusBtn" class="qty-btn qty-minus" type="button">−</button>
+      <div id="qtyDisplay" class="qty-display">1</div>
+      <button id="qtyPlusBtn" class="qty-btn qty-plus" type="button">+</button>
+      <button id="qtyConfirmBtn" class="qty-modal-confirm" type="button">Добавить в корзину</button>
     </div>
-    
-    <div class="qty-modal-info">
-      <span id="qtyPrice">—</span> × <span id="qtyQty">1</span> = <b id="qtyTotal">—</b>
-    </div>
-    
-    <button id="qtyConfirmBtn" class="qty-modal-confirm" type="button">Добавить в корзину</button>
   </div>
 </div>
 
 
-<script src="js/app.js?v=7.6"></script>
+<script src="js/app.js?v=7.7"></script>
 </body>
 </html>
