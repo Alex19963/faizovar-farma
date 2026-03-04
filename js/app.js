@@ -123,14 +123,34 @@ function fillProfileView(client) {
 
 function openProfileScreenOverlay() {
   if (!profileScreen) {
-    console.error("[PROFILE] profileScreen element not found!");
+    console.error("[PROFILE] profileScreen element not found in DOM!");
     return;
   }
 
   console.log("[PROFILE] openProfileScreenOverlay called");
-  document.body.classList.add("cart-open");
+  console.log("[PROFILE] profileScreen element info:", {
+    id: profileScreen.id,
+    className: profileScreen.className,
+    display: profileScreen.style.display,
+    computedDisplay: window.getComputedStyle(profileScreen).display,
+    hasHiddenClass: profileScreen.classList.contains("hidden")
+  });
+
+  // Убедимся, что элемент удален из скрытого состояния
   profileScreen.classList.remove("hidden");
-  profileScreen.style.display = "";
+  
+  // Явно установим display для гарантии видимости
+  profileScreen.style.display = "flex";
+  profileScreen.style.visibility = "visible";
+  
+  // Добавим класс для визуального контроля
+  document.body.classList.add("cart-open");
+
+  console.log("[PROFILE] After changes:", {
+    display: profileScreen.style.display,
+    computedDisplay: window.getComputedStyle(profileScreen).display,
+    hasHiddenClass: profileScreen.classList.contains("hidden")
+  });
 
   openProfileScreen();
 }
