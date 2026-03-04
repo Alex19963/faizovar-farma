@@ -77,6 +77,20 @@ function requireAdminPage(req, res, next) {
   next();
 }
 
+const adminOrderEventClients = new Set();
+
+function broadcastAdminOrderEvent(eventName, payload = {}) {
+  const body = `event: ${eventName}\ndata: ${JSON.stringify(payload)}\n\n`;
+
+  for (const clientRes of adminOrderEventClients) {
+    try {
+      clientRes.write(body);
+    } catch {
+      adminOrderEventClients.delete(clientRes);
+    }
+  }
+}
+
 function ensureOrderDiscountColumn(cb) {
   db.all("PRAGMA table_info(orders)", (err, rows) => {
     if (err) return cb(err);
@@ -1470,6 +1484,34 @@ function handleOrderDiscountUpdate(req, res) {
 app.patch("/api/admin/orders/:orderId/discount", requireAdminApi, handleOrderDiscountUpdate);
 app.put("/api/admin/orders/:orderId/discount", requireAdminApi, handleOrderDiscountUpdate);
 
+app.get("/api/admin/events/orders", requireAdminApi, (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("X-Accel-Buffering", "no");
+
+  if (typeof res.flushHeaders === "function") {
+    res.flushHeaders();
+  }
+
+  res.write("retry: 3000\n\n");
+  adminOrderEventClients.add(res);
+
+  const keepAlive = setInterval(() => {
+    try {
+      res.write(": keepalive\n\n");
+    } catch {
+      clearInterval(keepAlive);
+      adminOrderEventClients.delete(res);
+    }
+  }, 25000);
+
+  req.on("close", () => {
+    clearInterval(keepAlive);
+    adminOrderEventClients.delete(res);
+  });
+});
+
 /* ================== СОЗДАНИЕ ЗАКАЗА (КЛИЕНТ) ================== */
 app.post("/api/orders", (req, res) => {
   const { customerId, items } = req.body || {};
@@ -1513,6 +1555,12 @@ app.post("/api/orders", (req, res) => {
                   if (eCommit) {
                     return db.run("ROLLBACK", () => res.status(500).json({ message: "Ошибка сохранения заказа" }));
                   }
+                  broadcastAdminOrderEvent("order-created", {
+                    orderId,
+                    customerId: cid,
+                    status: "new",
+                    createdAt: new Date().toISOString()
+                  });
                   return res.json({ success: true, orderId, total });
                 });
               });

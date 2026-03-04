@@ -35,6 +35,11 @@
   CACHE_DURATION_MS: 5 * 60 * 1000  // 5 минут
 };
 
+let ordersEventsSource = null;
+let ordersEventsReconnectTimer = null;
+let ordersRealtimeRefreshTimer = null;
+const ORDERS_EVENTS_RECONNECT_MS = 3000;
+
 const el = {
   newOrderCount: document.getElementById("newOrderCount"),
   newOrderTitle: document.getElementById("newOrderTitle"),
@@ -2064,6 +2069,76 @@ async function loadOrders() {
   renderOrders();
 }
 
+function queueRealtimeRefresh() {
+  if (ordersRealtimeRefreshTimer) {
+    clearTimeout(ordersRealtimeRefreshTimer);
+  }
+
+  ordersRealtimeRefreshTimer = setTimeout(async () => {
+    ordersRealtimeRefreshTimer = null;
+
+    if (state.mainSection === "products") return;
+
+    try {
+      if (state.mainSection === "orders" && state.view === "orders" && state.selectedClientId) {
+        await loadOrders();
+        return;
+      }
+
+      state.clientsLoadedAt = null;
+      await loadClients();
+    } catch (err) {
+      console.error("Realtime refresh error:", err);
+    }
+  }, 250);
+}
+
+function connectOrdersEvents() {
+  if (typeof window.EventSource === "undefined") return;
+
+  if (ordersEventsSource) {
+    ordersEventsSource.close();
+    ordersEventsSource = null;
+  }
+
+  const source = new EventSource("/api/admin/events/orders", { withCredentials: true });
+  ordersEventsSource = source;
+
+  source.addEventListener("order-created", () => {
+    queueRealtimeRefresh();
+  });
+
+  source.onerror = () => {
+    source.close();
+    if (ordersEventsSource === source) {
+      ordersEventsSource = null;
+    }
+
+    if (ordersEventsReconnectTimer) return;
+    ordersEventsReconnectTimer = setTimeout(() => {
+      ordersEventsReconnectTimer = null;
+      connectOrdersEvents();
+    }, ORDERS_EVENTS_RECONNECT_MS);
+  };
+}
+
+function stopOrdersEvents() {
+  if (ordersEventsReconnectTimer) {
+    clearTimeout(ordersEventsReconnectTimer);
+    ordersEventsReconnectTimer = null;
+  }
+
+  if (ordersRealtimeRefreshTimer) {
+    clearTimeout(ordersRealtimeRefreshTimer);
+    ordersRealtimeRefreshTimer = null;
+  }
+
+  if (ordersEventsSource) {
+    ordersEventsSource.close();
+    ordersEventsSource = null;
+  }
+}
+
 const TZ = "Asia/Dushanbe";
 
 function parseDateSmart(v){
@@ -3932,3 +4007,5 @@ newOrderBtn?.addEventListener("click", openNewOrderModal);
 /* INIT */
 bind();
 loadClients();
+connectOrdersEvents();
+window.addEventListener("beforeunload", stopOrdersEvents);
