@@ -912,12 +912,19 @@ const qtyModalTitle = document.getElementById("qtyModalTitle");
 const qtyPrice = document.getElementById("qtyPrice");
 const qtyTotal = document.getElementById("qtyTotal");
 
+console.log("[APP] Quantity modal elements loaded:", { qtyModal, qtyDisplay, qtyMinusBtn, qtyPlusBtn, qtyConfirmBtn });
+
 function openQtyModal(id) {
+  console.log("[openQtyModal] Called with id:", id);
   currentQtyProductId = id;
   currentQtyValue = 1;
   const product = products.find(p => p.id == id);
   
-  if (!product) return;
+  console.log("[openQtyModal] Product found:", product);
+  if (!product) {
+    console.warn("[openQtyModal] Product not found!");
+    return;
+  }
   
   qtyModalTitle.textContent = product.name;
   qtyPrice.textContent = product.price;
@@ -925,7 +932,10 @@ function openQtyModal(id) {
   updateQtyModalDisplay();
   
   if (qtyModal) {
+    console.log("[openQtyModal] Showing modal");
     qtyModal.classList.remove("hidden");
+  } else {
+    console.warn("[openQtyModal] qtyModal element not found!");
   }
 }
 
