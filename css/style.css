@@ -611,8 +611,7 @@ body{
     1.2fr     /* производитель */
     1fr       /* срок */
     .8fr      /* цена */
-    120px     /* количество */
-    120px;    /* кнопка */
+    140px;    /* кнопка (справа) */
 
   align-items: center;
   padding: 10px 12px;
@@ -923,19 +922,19 @@ body{
 
   /* таблица-строка на мобилке: делаем компактно и читаемо */
   .product-row{
-    grid-template-columns: 54px 1.8fr 0.9fr 0.9fr;
+    grid-template-columns: 54px 1fr 100px;
     grid-template-areas:
-      "img name price action"
-      "img type qty  action";
+      "img name action"
+      "img type action";
     row-gap: 6px;
   }
 
   .pr-img{ grid-area: img; }
   .pr-name{ grid-area: name; }
-  .pr-price{ grid-area: price; text-align: right; }
+  .pr-price{ display: none; }
   .pr-action{ grid-area: action; }
   .pr-type{ grid-area: type; }
-  .pr-qty{ grid-area: qty; justify-content: flex-end; }
+  .pr-qty{ display: none; }
 
   /* кнопка "В корзину" компактнее */
   .pr-action button{
@@ -1011,7 +1010,6 @@ body{
       "img manufacturer"
       "img expiry"
       "img price"
-      "qty qty"
       "action action";
     row-gap: 6px;
     column-gap: 12px;
@@ -4114,6 +4112,11 @@ body.history-open .content{
 
 #qtyInput[type=number]{
   -moz-appearance: textfield;
+}
+
+/* HIDE PRODUCT QTY CONTROLS - moved to modal */
+.pr-qty{
+  display: none !important;
 }
 
 .qty-modal-info{
