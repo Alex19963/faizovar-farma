@@ -91,6 +91,14 @@ function broadcastAdminOrderEvent(eventName, payload = {}) {
   }
 }
 
+function emitOrderUpdated(kind, payload = {}) {
+  broadcastAdminOrderEvent("order-updated", {
+    kind,
+    ...payload,
+    ts: new Date().toISOString()
+  });
+}
+
 function ensureOrderDiscountColumn(cb) {
   db.all("PRAGMA table_info(orders)", (err, rows) => {
     if (err) return cb(err);
@@ -901,6 +909,11 @@ app.patch("/api/admin/orders/:orderId/payment", requireAdminApi, (req, res) => {
           function (err) {
             if (err) return res.status(500).json({ message: "Ошибка обновления оплаты" });
             if (!this.changes) return res.status(404).json({ message: "Заказ не найден" });
+            emitOrderUpdated("payment-status", {
+              orderId,
+              payment_status: paymentStatus,
+              paid_amount: nextPaidAmount
+            });
             res.json({ success: true, orderId, payment_status: paymentStatus, paid_amount: nextPaidAmount });
           }
         );
@@ -962,6 +975,12 @@ app.patch("/api/admin/orders/:orderId/payment/add", requireAdminApi, (req, res) 
             function (err) {
               if (err) return res.status(500).json({ message: "Ошибка обновления оплаты" });
               if (!this.changes) return res.status(404).json({ message: "Заказ не найден" });
+
+              emitOrderUpdated("payment-add", {
+                orderId,
+                paid_amount: nextPaid,
+                payment_status: status
+              });
 
               res.json({
                 success: true,
@@ -1028,6 +1047,12 @@ app.patch("/api/admin/orders/:orderId/payment/set", requireAdminApi, (req, res) 
               if (err) return res.status(500).json({ message: "Ошибка обновления оплаты" });
               if (!this.changes) return res.status(404).json({ message: "Заказ не найден" });
 
+              emitOrderUpdated("payment-set", {
+                orderId,
+                paid_amount: nextPaid,
+                payment_status: status
+              });
+
               res.json({
                 success: true,
                 orderId,
@@ -1082,6 +1107,7 @@ app.delete("/api/admin/orders/:id", requireAdminApi, (req, res) => {
                 res.status(500).json({ message: "Ошибка удаления заказа" })
               );
             }
+            emitOrderUpdated("deleted", { orderId: id });
             return res.json({ ok: true });
           });
         });
@@ -1198,6 +1224,7 @@ app.post("/api/admin/orders/:orderId/items", requireAdminApi, (req, res) => {
           const afterWrite = () => {
             recalcOrderTotal(orderId, (e3, newTotal) => {
               if (e3) return res.status(500).json({ message: "Ошибка пересчёта" });
+              emitOrderUpdated("items-updated", { orderId, total: newTotal });
               res.json({ success: true, total: newTotal });
             });
           };
@@ -1281,6 +1308,11 @@ app.post("/api/admin/orders", requireAdminApi, (req, res) => {
                     if (eCommit) {
                       return db.run("ROLLBACK", () => res.status(500).json({ message: "Ошибка сохранения заказа" }));
                     }
+                    emitOrderUpdated("created-by-admin", {
+                      orderId,
+                      customerId: cid,
+                      status: "new"
+                    });
                     return res.json({ success: true, orderId, total });
                   });
                 });
@@ -1343,6 +1375,7 @@ app.put("/api/admin/order-items/:itemId", requireAdminApi, (req, res) => {
 
       recalcOrderTotal(orderId, (e3, newTotal) => {
         if (e3) return res.status(500).json({ message: "Ошибка пересчёта" });
+        emitOrderUpdated("item-qty-updated", { orderId, total: newTotal });
         res.json({ success: true, total: newTotal });
       });
     });
@@ -1363,6 +1396,7 @@ app.delete("/api/admin/order-items/:itemId", requireAdminApi, (req, res) => {
 
       recalcOrderTotal(orderId, (e3, newTotal) => {
         if (e3) return res.status(500).json({ message: "Ошибка пересчёта" });
+        emitOrderUpdated("item-deleted", { orderId, total: newTotal });
         res.json({ success: true, total: newTotal });
       });
     });
@@ -1412,6 +1446,7 @@ app.put("/api/admin/orders/:orderId/status", requireAdminApi, (req, res) => {
                     if (eCommit) {
                       return db.run("ROLLBACK", () => res.status(500).json({ message: "Ошибка сохранения" }));
                     }
+                    emitOrderUpdated("status-changed", { orderId, status });
                     return res.json({ success: true });
                   });
                 });
@@ -1475,6 +1510,7 @@ function handleOrderDiscountUpdate(req, res) {
       function (err) {
         if (err) return res.status(500).json({ message: "Ошибка обновления скидки заказа", error: err.message });
         if (!this.changes) return res.status(404).json({ message: "Заказ не найден" });
+        emitOrderUpdated("discount-changed", { orderId, discount: discountNum });
         res.json({ success: true });
       }
     );
@@ -1560,6 +1596,11 @@ app.post("/api/orders", (req, res) => {
                     customerId: cid,
                     status: "new",
                     createdAt: new Date().toISOString()
+                  });
+                  emitOrderUpdated("created-by-client", {
+                    orderId,
+                    customerId: cid,
+                    status: "new"
                   });
                   return res.json({ success: true, orderId, total });
                 });

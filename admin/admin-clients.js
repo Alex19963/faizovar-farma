@@ -2077,11 +2077,29 @@ function queueRealtimeRefresh() {
   ordersRealtimeRefreshTimer = setTimeout(async () => {
     ordersRealtimeRefreshTimer = null;
 
-    if (state.mainSection === "products") return;
-
     try {
       if (state.mainSection === "orders" && state.view === "orders" && state.selectedClientId) {
         await loadOrders();
+        return;
+      }
+
+      if (state.mainSection === "payments") {
+        state.clientsLoadedAt = null;
+        await loadClients();
+        if (state.selectedClientId) {
+          await renderPaymentsView();
+        }
+        return;
+      }
+
+      if (state.mainSection === "reports") {
+        state.clientsLoadedAt = null;
+        await loadClients();
+        return;
+      }
+
+      if (state.mainSection === "products") {
+        await loadProducts();
         return;
       }
 
@@ -2105,6 +2123,10 @@ function connectOrdersEvents() {
   ordersEventsSource = source;
 
   source.addEventListener("order-created", () => {
+    queueRealtimeRefresh();
+  });
+
+  source.addEventListener("order-updated", () => {
     queueRealtimeRefresh();
   });
 
